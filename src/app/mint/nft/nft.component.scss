@@ -1,0 +1,510 @@
+@import "./../../shared/shared";
+
+.backdrop {
+  @include centered();
+  align-items: flex-start;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 6;
+  width: 100%;
+  height: 100%;
+  padding: toRem(32) toRem(16);
+  overflow-y: auto;
+  @include custom-scrollbar();
+  animation: opaque 0.3s ease-out;
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  background-color: rgba(25, 28, 31, 0.8);
+
+  @media screen and (min-width: $xl) {
+    align-items: center;
+  }
+}
+
+.main-container {
+  height: 100%;
+}
+
+.product-container {
+  @include column-centered-start();
+  position: relative;
+  width: 100%;
+  min-height: 100%;
+  max-width: toRem(400);
+  gap: toRem(16);
+  background-color: var(--gray-20);
+  border-radius: toRem(8);
+  animation: slide-up 0.6s ease-out;
+
+  @media screen and (min-width: $md) {
+    max-width: toRem(500);
+  }
+  @media screen and (min-width: $xl) {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 0;
+    max-width: toRem(1200);
+    min-height: auto;
+    width: 90%;
+  }
+  @media screen and (min-width: $three-xl) {
+    flex-direction: row;
+    gap: 0;
+    max-width: toRem(1356);
+    min-height: auto;
+    width: 80%;
+  }
+
+  .close-btn {
+    position: absolute;
+    z-index: 2;
+    background-color: #0000;
+    @include centered();
+    width: toRem(32);
+    height: toRem(32);
+    top: toRem(12);
+    right: toRem(12);
+
+    @media screen and (min-width: $xl) {
+      right: toRem(27.5);
+    }
+    @media screen and (min-width: $three-xl) {
+      top: toRem(58);
+    }
+
+    .close-line {
+      background-color: var(--gray-100);
+      position: absolute;
+      width: toRem(20);
+      height: toRem(2);
+
+      &.top {
+        transform: rotateZ(45deg);
+      }
+
+      &.bottom {
+        transform: rotateZ(-45deg);
+      }
+    }
+  }
+
+  .product-img__cover {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1/1;
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: auto;
+
+    @media screen and (min-width: $xl) {
+      position: static;
+      overflow: hidden;
+      width: 55%;
+      border-top-left-radius: toRem(8);
+      border-bottom-left-radius: toRem(8);
+    }
+    @media screen and (min-width: $two-xl) {
+      // width: 50%;
+      border-top-left-radius: toRem(8);
+      border-bottom-left-radius: toRem(8);
+    }
+
+    canvas {
+      display: none;
+      width: 100%;
+      height: 100%;
+      grid-column: 1;
+      grid-row: 1;
+      border-top-left-radius: toRem(8);
+      border-top-right-radius: toRem(8);
+
+      @supports (display: grid) {
+        display: block;
+      }
+
+      @media screen and (min-width: $xl) {
+        border-radius: 0;
+      }
+    }
+
+    .product-img {
+      z-index: 1;
+      grid-column: 1;
+      grid-row: 1;
+      border-top-left-radius: toRem(8);
+      border-top-right-radius: toRem(8);
+      width: 100%;
+      height: auto;
+
+      @media screen and (min-width: $xl) {
+        border-radius: 0;
+      }
+    }
+
+    button {
+      position: absolute;
+      z-index: 2;
+      background-color: #0000;
+
+      &.close-btn {
+        @include centered();
+        width: toRem(32);
+        height: toRem(32);
+        top: toRem(12);
+        right: toRem(12);
+
+        @media screen and (min-width: $xl) {
+          right: toRem(27.5);
+        }
+        @media screen and (min-width: $three-xl) {
+          top: toRem(58);
+        }
+      }
+
+      &.nav-btn {
+        width: toRem(32);
+        aspect-ratio: 1/1;
+        bottom: toRem(-16);
+
+        img {
+          width: 100%;
+          height: auto;
+        }
+
+        @media screen and (min-width: $xl) {
+          bottom: 50%;
+          margin-bottom: toRem(-16);
+        }
+
+        &.prev {
+          left: 0;
+          transform: rotateZ(180deg);
+
+          @media screen and (min-width: $three-xl) {
+            width: toRem(64);
+            left: toRem(-88);
+          }
+        }
+        &.next {
+          right: 0;
+
+          @media screen and (min-width: $three-xl) {
+            width: toRem(64);
+            right: toRem(-88);
+          }
+        }
+      }
+    }
+  }
+}
+
+.product-content__container {
+  @include column-flex();
+  gap: toRem(32);
+  width: 100%;
+  flex: auto;
+  padding: 0 toRem(16) toRem(24);
+
+  @media screen and (min-width: $xl) {
+    padding: toRem(32) toRem(12);
+    padding-right: toRem(30);
+    width: 55%;
+    height: 100%;
+    justify-content: space-between;
+  }
+
+  @media screen and (min-width: $three-xl) {
+    padding: toRem(51) toRem(24);
+  }
+
+  .title {
+    display: inline-block;
+    font-size: toRem(24);
+    font-weight: bold;
+    line-height: 1.21;
+    margin-bottom: toRem(8);
+
+    @media screen and (min-width: $xl) {
+      font-size: toRem(20);
+      line-height: 1.45;
+    }
+    @media screen and (min-width: $three-xl) {
+      font-size: toRem(32);
+      line-height: 1.19;
+      margin-bottom: toRem(16);
+    }
+  }
+
+  .sub-title {
+    font-size: toRem(16);
+    font-weight: 500;
+    line-height: 1.5;
+    color: var(--gray-80);
+    margin-bottom: toRem(24);
+
+    @media screen and (min-width: $xl) {
+      font-size: toRem(12);
+      line-height: 2;
+      margin-bottom: toRem(12);
+    }
+    @media screen and (min-width: $three-xl) {
+      font-size: toRem(20);
+      line-height: 1.5;
+      margin-bottom: toRem(24);
+    }
+  }
+
+  .button-container {
+    width: 100%;
+    @include display-flex();
+    gap: toRem(16);
+    margin-bottom: toRem(16);
+
+    @media screen and (min-width: $xl) {
+      display: none;
+    }
+
+    button {
+      padding: toRem(8) toRem(4);
+      border-radius: toRem(4);
+      width: 100%;
+      font-size: toRem(10);
+      font-weight: bold;
+      line-height: 1.2;
+      border: solid 1px var(--gray-30);
+      background-color: var(--gray-20);
+      color: var(--gray-100);
+
+      &.active {
+        border: none;
+        background-color: var(--gray-90);
+        color: var(--gray-10);
+      }
+    }
+  }
+
+  h3.title {
+    font-size: toRem(12);
+    font-weight: bold;
+    line-height: 1.58;
+    margin-bottom: toRem(8);
+    // display: none;
+
+    @media screen and (min-width: $xl) {
+      display: inline-block;
+    }
+  }
+
+  .god-traits__container {
+    width: 100%;
+
+    .gods-traits {
+      width: 100%;
+      @include display-flex();
+      justify-content: flex-start;
+      flex-wrap: wrap;
+      list-style: none;
+      gap: toRem(16);
+
+      @media screen and (min-width: $xl) {
+        gap: toRem(32);
+      }
+
+      @supports (display: grid) {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-gap: toRem(16);
+
+        @media screen and (min-width: $xl) {
+          grid-template-columns: 1fr 1fr;
+          grid-gap: toRem(32);
+        }
+      }
+    }
+
+    .trait {
+      @include centered();
+      justify-content: flex-start;
+      gap: toRem(8);
+      width: calc(50% - toRem(8));
+      padding: toRem(8) toRem(16);
+      padding-right: 0;
+      border-radius: toRem(4);
+      background-color: var(--gray-10);
+
+      @media screen and (min-width: $xl) {
+        width: calc(33% - toRem(21));
+      }
+
+      @supports (display: grid) {
+        width: 100%;
+      }
+
+      .icon {
+        width: toRem(24);
+        height: toRem(24);
+
+        img {
+          width: 100%;
+          height: auto;
+        }
+      }
+
+      .criteria {
+        font-size: toRem(12);
+        font-weight: 500;
+        line-height: 1.5;
+        color: var(--gray-80);
+        margin-bottom: toRem(6);
+      }
+
+      .criteria-container {
+        width: 100%;
+      }
+
+      .criteria-value {
+        font-size: toRem(12);
+        font-weight: bold;
+        line-height: 1.5;
+      }
+
+      &.Overseer {
+        background: linear-gradient(90deg, #ffbb55 -34.44%, #c15100 135.56%);
+
+        .criteria {
+          color: var(--yellow-60);
+        }
+
+        .criteria-value {
+          color: var(--yellow-80);
+        }
+      }
+    }
+  }
+
+  .buy-btn {
+    @include between();
+    padding: toRem(16);
+    border-radius: toRem(8);
+    background-color: var(--gray-10);
+    font-size: toRem(16);
+    font-weight: 500;
+    line-height: 1.5;
+    color: var(--red-100);
+  }
+
+  .icon-cover {
+    @include display-flex();
+    gap: toRem(16);
+
+    a {
+      width: toRem(30);
+      height: toRem(30);
+    }
+
+    img {
+      width: 100%;
+      height: auto;
+    }
+  }
+}
+
+.error {
+  @include column-centered();
+}
+
+.error-container {
+  width: 100%;
+  @include column-centered();
+  padding: 1rem;
+
+  @media screen and (min-width: $two-xl) {
+    gap: 0;
+  }
+
+  &.outer {
+    padding-top: toRem(80);
+    justify-content: flex-start;
+    height: 100%;
+  }
+
+  app-error-svg {
+    width: 100%;
+    max-width: toRem(667);
+    margin-bottom: toRem(12);
+
+    @media screen and (min-width: $two-xl) {
+      max-width: toRem(768);
+    }
+
+    svg {
+      width: 100%;
+      height: auto;
+    }
+  }
+}
+
+.error-msg {
+  h2 {
+    font-size: toRem(32);
+    font-weight: bold;
+    line-height: 1.19;
+    color: var(--main-red);
+    text-align: center;
+    margin-bottom: toRem(24);
+
+    @media screen and (min-width: $md) {
+      font-size: toRem(48);
+      line-height: 2.88;
+      margin-bottom: toRem(28);
+    }
+    @media screen and (min-width: $two-xl) {
+      font-size: toRem(64);
+      line-height: 1.56;
+    }
+  }
+
+  p {
+    font-size: toRem(16);
+    font-weight: 500;
+    line-height: 1.5;
+    text-align: center;
+    color: var(--gray-80);
+    margin-bottom: toRem(80);
+
+    @media screen and (min-width: $md) {
+      font-size: toRem(20);
+    }
+    @media screen and (min-width: $two-xl) {
+      font-size: toRem(24);
+    }
+  }
+}
+
+@keyframes opaque {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes slide-up {
+  from {
+    transform: translateY(2rem);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+@keyframes re-slide-up {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(2rem);
+  }
+}

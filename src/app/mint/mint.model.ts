@@ -1,7 +1,11 @@
 export interface NFT {
   name: string;
-  description: string;
+  image: string;
   attributes: { trait_type: string; value: string }[];
+  navigation: {
+    next: string;
+    prev: string;
+  };
 }
 
 export interface Blur {

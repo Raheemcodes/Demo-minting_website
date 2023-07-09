@@ -1,0 +1,110 @@
+<div class="backdrop" #backdrop (click)="backdropClose($event)">
+  <main class="product-container" [class.error]="error" #main>
+    <button
+      (click)="close()"
+      (window:keydown.Escape)="close()"
+      class="close-btn"
+    >
+      <div class="close-line top"></div>
+      <div class="close-line bottom"></div>
+    </button>
+
+    <ng-container *ngIf="!error">
+      <div class="product-img__cover">
+        <div *ngIf="isLoading" class="product-img skeleton"></div>
+
+        <ng-container *ngIf="!isLoading">
+          <img
+            class="product-img"
+            width="444"
+            height="444"
+            loading="lazy"
+            [src]="nft.image"
+            alt
+          />
+        </ng-container>
+
+        <button
+          *ngIf="nft?.navigation?.next"
+          class="nav-btn next"
+          (click)="navigate(nft.navigation.next)"
+          (window:keydown.ArrowRight)="navigate(nft.navigation.next)"
+          title="Next"
+        >
+          <img
+            width="32"
+            height="32"
+            src="./../../../assets/icons/right-arrow.svg"
+            alt="close button"
+          />
+        </button>
+
+        <button
+          *ngIf="nft?.navigation?.prev"
+          class="nav-btn prev"
+          (click)="navigate(nft.navigation.prev)"
+          (window:keydown.ArrowLeft)="navigate(nft.navigation.prev)"
+          title="Previous"
+        >
+          <img
+            width="32"
+            height="32"
+            src="./../../../assets/icons/right-arrow.svg"
+            alt="close button"
+          />
+        </button>
+      </div>
+
+      <div class="product-content__container">
+        <h2 *ngIf="isLoading" class="title skeleton">Ikenga</h2>
+        <h2 *ngIf="!isLoading" class="title">{{ nft.name }}</h2>
+
+        <section
+          class="god-traits__container"
+          *ngIf="pageSwitched || screenWidth >= 1280"
+        >
+          <h3 class="title" [class.skeleton]="isLoading">Traits</h3>
+
+          <ul class="gods-traits">
+            <ng-container *ngIf="isLoading">
+              <li
+                *ngFor="let trait of [1, 2, 3, 4, 5, 6]"
+                [ngClass]="{ trait: true, skeleton: true }"
+              >
+                <div class="criteria-container">
+                  <div class="criteria">Gender</div>
+                  <div class="criteria-value">Male</div>
+                </div>
+              </li>
+            </ng-container>
+
+            <ng-container *ngIf="!isLoading">
+              <li
+                *ngFor="let trait of nft.attributes"
+                [ngClass]="{
+                  trait: true,
+                  Overseer: trait.trait_type == 'Overseer'
+                }"
+              >
+                <div class="criteria-container">
+                  <div class="criteria">{{ trait.trait_type }}</div>
+                  <div class="criteria-value">{{ trait.value }}</div>
+                </div>
+              </li>
+            </ng-container>
+          </ul>
+        </section>
+      </div></ng-container
+    >
+
+    <div class="error-container" *ngIf="error">
+      <app-error-svg></app-error-svg>
+
+      <div class="error-msg">
+        <h2>Connection Error</h2>
+
+        <p>Please check your network and try again</p>
+      </div>
+    </div>
+  </main>
+</div>

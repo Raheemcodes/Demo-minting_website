@@ -4,17 +4,14 @@
   width: 100%;
   min-height: toRem(320);
   height: 100%;
-
-  // @media screen and (min-width: $two-xl) {
-  //   padding: 0 10%;
-  // }
 }
 
 .bg-img {
+  @include column-flex();
   position: relative;
   padding-top: toRem(80);
   width: 100%;
-  height: floor(calc(34200 / 375)) * 1vw;
+
   background-color: #89251a;
   background-image: linear-gradient(
     to bottom,
@@ -25,60 +22,112 @@
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center top;
-
-  @supports (aspect-ratio: 375/342) {
-    height: auto;
-    aspect-ratio: 375/342;
-  }
-
-  @media screen and (min-width: $md) {
-    margin-bottom: toRem(54);
-  }
-
-  @media screen and (min-width: $lg) {
-    min-height: toRem(600);
-    height: 100vh;
-  }
-
-  @media screen and (min-width: $two-xl) {
-    background-position: center 70%;
-  }
+  gap: 2rem;
 
   .content {
-    position: absolute;
-    bottom: toRem(40);
-    left: toRem(16);
-    max-width: toRem(302);
-    @include display-flex();
-    flex-direction: column;
+    @include column-flex();
     justify-content: center;
-    gap: toRem(8);
+    gap: toRem(64);
+    padding: toRem(40) toRem(16);
 
     @media screen and (min-width: $md) {
-      max-width: toRem(756);
-      bottom: toRem(97);
-      left: toRem(48);
+      flex-direction: row;
+      padding: toRem(97) toRem(48);
     }
   }
 
-  .title {
-    font-size: toRem(32);
-    font-weight: 900;
-    line-height: 1.19;
+  .mint-time {
+    width: 100%;
 
-    @media screen and (min-width: $md) {
-      font-size: toRem(84);
+    dl {
+      @include column-flex();
+      gap: 2rem;
+
+      @media screen and (min-width: $md) {
+        gap: 2.5rem;
+      }
+    }
+
+    .time-item {
+      @include column-flex();
+      gap: 0.5rem;
+
+      @media screen and (min-width: $md) {
+        gap: 1rem;
+      }
+    }
+
+    dt {
+      font-size: 1.2rem;
+      font-weight: bold;
+
+      @media screen and (min-width: $md) {
+        font-size: 1.5rem;
+      }
+    }
+
+    dd {
+      @include display-flex();
+      gap: 0 1rem;
+      font-size: 1rem;
+      flex-wrap: wrap;
+      font-weight: 400;
+
+      @media screen and (min-width: $lg) {
+        font-size: 1.2rem;
+      }
+
+      .bold {
+        font-weight: 500;
+      }
     }
   }
 
-  .sub-title {
-    font-size: toRem(16);
-    font-weight: 500;
-    line-height: 1.5;
-    color: var(--gray-80);
+  .mint__status-container {
+    @include centered();
+    width: 100%;
+  }
 
-    @media screen and (min-width: $md) {
-      font-size: toRem(24);
+  .mint__status-circle {
+    @include centered();
+    width: 100%;
+    position: relative;
+  }
+
+  .progress {
+    width: toRem(200);
+    height: toRem(200);
+
+    @media screen and (min-width: $lg) {
+      width: toRem(300);
+      height: toRem(300);
+    }
+
+    .track,
+    .fill {
+      fill: rgba(0, 0, 0, 0);
+      stroke-width: 5;
+      transform: rotate(90deg) translate(0, toRem(-80));
+    }
+
+    .track {
+      stroke: var(--gray-60);
+    }
+
+    .fill {
+      stroke: var(--gray-100);
+      stroke-dasharray: 219.99078369140625;
+      // stroke-dashoffset: -200.99078369140625;
+      transition: stroke-dashoffset 1s;
+    }
+  }
+
+  .mint-status {
+    position: absolute;
+    font-size: 1.2rem;
+
+    @media screen and (min-width: $lg) {
+      font-size: 2rem;
     }
   }
 }
@@ -101,9 +150,6 @@
 
   @media screen and (min-width: $md) {
     padding: toRem(24) toRem(24) toRem(48);
-  }
-  @media screen and (min-width: $lg) {
-    width: calc(100% - toRem(400));
   }
 
   .products-list {
@@ -151,13 +197,14 @@
       gap: toRem(32) toRem(16);
 
       @media screen and (min-width: $md) {
-        grid-template-columns: repeat(2, minmax(toRem(163), 1fr));
+        grid-template-columns: repeat(3, 1fr);
         gap: toRem(77) toRem(24);
       }
       @media screen and (min-width: $xl) {
-        grid-template-columns: repeat(auto-fill, minmax(toRem(360), 1fr));
+        grid-template-columns: repeat(4, 1fr);
       }
       @media screen and (min-width: $two-xl) {
+        grid-template-columns: repeat(5, 1fr);
         gap: toRem(90) toRem(32);
       }
 
@@ -185,6 +232,34 @@
       border-radius: toRem(10);
     }
 
+    &.null {
+      @include centered();
+      background-color: var(--gray-60);
+      position: relative;
+    }
+
+    .question_mark {
+      color: var(--gray-10);
+      font-size: 10rem;
+      font-weight: 300;
+    }
+
+    .line-left,
+    .line-right {
+      position: absolute;
+      background-color: #000;
+      // root 2 = 1.41421
+      width: 100% * 1.41421;
+      height: toRem(1);
+    }
+
+    .line-left {
+      transform: rotateZ(45deg);
+    }
+    .line-right {
+      transform: rotateZ(-45deg);
+    }
+
     canvas {
       position: absolute;
       width: 100%;
@@ -209,6 +284,29 @@
       font-size: toRem(20);
       font-weight: 500;
       line-height: toRem(30);
+    }
+  }
+
+  .mint-btn {
+    font-family: "Satoshi";
+    font-weight: 700;
+    font-size: toRem(16);
+    padding: toRem(8) toRem(16);
+    color: var(--gray-10);
+    background-color: var(--gray-100);
+    border-radius: toRem(8);
+    transition: all 0.3s ease-out;
+
+    @media (min-width: $two-xl) {
+      font-size: toRem(16);
+      padding: toRem(12) toRem(24);
+      gap: toRem(48);
+    }
+
+    @media (hover: hover) {
+      &:hover {
+        background-color: var(--gray-90);
+      }
     }
   }
 }
@@ -274,4 +372,8 @@
       font-size: toRem(24);
     }
   }
+}
+
+.normal-cursor {
+  cursor: default !important;
 }
