@@ -7,11 +7,16 @@ import { HeaderComponent } from './header/header.component';
 import { MintComponent } from './mint/mint.component';
 import { NftComponent } from './mint/nft/nft.component';
 import { ErrorSvgComponent } from './shared/error-svg/error-svg.component';
+import Web3 from 'web3';
 
 @NgModule({
   declarations: [AppComponent, MintComponent, HeaderComponent, NftComponent],
   imports: [BrowserModule, AppRoutingModule, ErrorSvgComponent],
-  providers: [],
+  providers: [
+    { provide: 'Window', useValue: window },
+    { provide: 'Web3', useValue: new Web3(Web3.givenProvider) },
+  ],
+
   bootstrap: [AppComponent],
 })
 export class AppModule {}

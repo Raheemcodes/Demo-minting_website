@@ -6,6 +6,7 @@ export interface NFT {
     next: string;
     prev: string;
   };
+  owner?: string;
 }
 
 export interface Blur {

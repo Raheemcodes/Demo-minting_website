@@ -59,6 +59,15 @@
         <h2 *ngIf="isLoading" class="title skeleton">Ikenga</h2>
         <h2 *ngIf="!isLoading" class="title">{{ nft.name }}</h2>
 
+        <p *ngIf="isLoading" class="sub-title skeleton">
+          God of Time, Success, and Metal
+        </p>
+        <p *ngIf="!isLoading" class="sub-title" [title]="nft.owner">
+          <ng-container *ngIf="nft.owner">
+            Owner: {{ nft.owner }}
+          </ng-container>
+        </p>
+
         <section
           class="god-traits__container"
           *ngIf="pageSwitched || screenWidth >= 1280"

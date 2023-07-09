@@ -26,6 +26,7 @@ export class NftComponent implements OnInit, AfterViewInit, OnDestroy {
   name!: string;
   nft: NFT = {
     name: 'Azuki',
+    owner: '0x0fljflkf9400',
     image: '../../../assets/team/Age.jpg',
     attributes: [
       { trait_type: 'Hair', value: 'Blue' },
@@ -41,7 +42,7 @@ export class NftComponent implements OnInit, AfterViewInit, OnDestroy {
     },
   };
   $nft = new BehaviorSubject<NFT | null>(null);
-  isLoading: boolean = false;
+  isLoading: boolean = true;
   error: boolean = false;
   desc!: string;
 

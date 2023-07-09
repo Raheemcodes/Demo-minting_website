@@ -1,4 +1,4 @@
-import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { DOCUMENT } from '@angular/common';
 import {
   Component,
   ElementRef,
@@ -8,8 +8,7 @@ import {
   ViewChild,
 } from '@angular/core';
 
-import { NavigationEnd, Router } from '@angular/router';
-import { delay } from 'rxjs';
+import { SharedService } from '../shared/shared.service';
 
 @Component({
   selector: 'app-header',
@@ -24,8 +23,13 @@ export class HeaderComponent implements OnInit {
 
   constructor(
     private renderer: Renderer2,
+    private sharedService: SharedService,
     @Inject(DOCUMENT) private document: Document
   ) {}
 
   ngOnInit(): void {}
+
+  connect() {
+    this.sharedService.connectWallet();
+  }
 }

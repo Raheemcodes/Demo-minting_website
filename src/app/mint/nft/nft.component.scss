@@ -203,13 +203,13 @@
 
 .product-content__container {
   @include column-flex();
-  gap: toRem(32);
   width: 100%;
   flex: auto;
   padding: 0 toRem(16) toRem(24);
 
   @media screen and (min-width: $xl) {
-    padding: toRem(32) toRem(12);
+    gap: toRem(32);
+    padding: toRem(12);
     padding-right: toRem(30);
     width: 55%;
     height: 100%;
