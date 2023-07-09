@@ -24,7 +24,6 @@ export class HeaderComponent implements OnInit {
 
   constructor(
     private renderer: Renderer2,
-
     @Inject(DOCUMENT) private document: Document
   ) {}
 
