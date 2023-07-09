@@ -1,1 +1,178 @@
 /* You can add global styles to this file, and also import other style files */
+@import "./app/shared/shared";
+
+@font-face {
+  font-family: "Satoshi";
+  src: local(Satoshi-Regular),
+    url("./assets/fonts/Satoshi-Regular.woff2") format("woff2"),
+    url("./assets/fonts/Satoshi-Regular.woff") format("woff"),
+    url("./assets/fonts/Satoshi-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-display: block;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Satoshi";
+  src: local(Satoshi-Medium),
+    url("./assets/fonts/Satoshi-Medium.woff2") format("woff2"),
+    url("./assets/fonts/Satoshi-Medium.woff") format("woff"),
+    url("./assets/fonts/Satoshi-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-display: block;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Satoshi";
+  src: local(Satoshi-Bold),
+    url("./assets/fonts/Satoshi-Bold.woff2") format("woff2"),
+    url("./assets/fonts/Satoshi-Bold.woff") format("woff"),
+    url("./assets/fonts/Satoshi-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-display: block;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Satoshi";
+  src: local(Satoshi-Black),
+    url("./assets/fonts/Satoshi-Black.woff2") format("woff2"),
+    url("./assets/fonts/Satoshi-Black.woff") format("woff"),
+    url("./assets/fonts/Satoshi-Black.ttf") format("truetype");
+  font-weight: 900;
+  font-display: swap;
+  font-style: normal;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+
+  &:focus {
+    outline: none;
+  }
+
+  a {
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  button {
+    font-family: "Satoshi", sans-serif;
+    cursor: pointer;
+    border: none;
+  }
+}
+
+:root {
+  --main-bg-color: #191c1f;
+  --main-yellow: #ffd700;
+  --main-red: #cc2b17;
+  --red-100: #fff;
+  --red-90: #fbe2df;
+  --red-80: #f7c1ba;
+  --red-70: #f08375;
+  --red-60: #eb5e4c;
+  --red-50: #e73d28;
+  --red-40-main: #cc2b17;
+  --red-30: #aa2413;
+  --red-20: #851d0f;
+  --red-10: #320b06;
+  --yellow-100: #fff;
+  --yellow-90: #fffdf0;
+  --yellow-80: #fff6c7;
+  --yellow-70: #fff09e;
+  --yellow-60: #ffe975;
+  --yellow-50: #ffe247;
+  --yellow-40-main: #ffd700;
+  --yellow-30: #d6b500;
+  --yellow-20: #b29600;
+  --yellow-10: #615200;
+  --gray-100: #fdfdfe;
+  --gray-90: #dbdee1;
+  --gray-80: #aeb5bc;
+  --gray-70: #98a0a9;
+  --gray-60: #828b96;
+  --gray-50: #5b626c;
+  --gray-40: #484e56;
+  --gray-30: #353a40;
+  --gray-20: #222527;
+  --gray-10: #191c1f;
+  --pending-staus-color: rgba(255, 215, 0, 0.2);
+  --completed-staus-color: rgba(16, 185, 129, 0.3);
+  --main-font: "Satoshi", sans-serif;
+  --bulan-font: "ODIDEdark", sans-serif;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  min-width: toRem(280);
+  min-height: toRem(480);
+  background-color: var(--gray-10);
+  font-family: var(--main-font);
+  font-weight: 500;
+  color: var(--gray-100);
+
+  @include custom-scrollbar();
+}
+
+.noscroll {
+  overflow: hidden;
+}
+
+img {
+  border: none;
+  outline: none;
+}
+
+img[alt] {
+  position: relative;
+  @include centered();
+
+  &::after {
+    box-sizing: border-box;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: inherit;
+    font-family: var(--main-font);
+    content: "";
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 500;
+    width: 100%;
+    height: 100%;
+    padding: 1rem;
+    @include centered();
+  }
+}
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--gray-40);
+    animation: skeleton-loading 1s linear infinite alternate;
+  }
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-color: hsl(214, 9%, 31%);
+  }
+  100% {
+    background-color: hsl(214, 9%, 51%);
+  }
+}

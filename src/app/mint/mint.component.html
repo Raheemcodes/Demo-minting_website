@@ -1,0 +1,90 @@
+<main id="gallery">
+  <section class="bg-img">
+    <div class="content">
+      <h2 class="title">Mint</h2>
+      <p class="sub-title">The Bulan gods and lores</p>
+    </div>
+  </section>
+
+  <section class="main-content">
+    <section class="products-container" #ul>
+      <ul
+        class="products-list"
+        [attr.style]="isLoading ? 'overflow: hidden' : ''"
+      >
+        <li class="products">
+          <div class="img-cover">
+            <img
+              loading="lazy"
+              width="444"
+              height="444"
+              src="../../assets/team/Anansi.jpg"
+              [style.backgroundColor]=""
+              alt
+            />
+          </div>
+          <h2 class="god-name">azuki</h2>
+        </li>
+        <!-- <ng-container *ngIf="isLoading">
+          <li class="products" *ngFor="let demo of [1, 2, 3, 4, 5, 6, 7, 8, 9]">
+            <div class="img-cover skeleton"></div>
+            <h2 class="god-name skeleton">Demo</h2>
+          </li>
+        </ng-container> -->
+
+        <!-- <ng-container
+          *ngIf="
+            !isLoading  && gods && gods.length > 0 && !error
+          "
+        > -->
+        <!-- <li
+            class="products"
+            *ngFor="let god of gods; trackBy: trackBy"
+            (window:keydown.Control)="ctrlDown = true"
+            (window:keyup.Control)="ctrlDown = false"
+            (click)="navigate(god.name)"
+            [title]="god.description.role"
+          >
+            <div class="img-cover" >
+              <img
+                loading="lazy"
+                width="444"
+                height="444"
+                src="https://www.topaz.so/cdn-cgi/image/width=512,quality=90,fit=scale-down,anim=false,onerror=redirect/{{
+                  god.media.uri
+                }}"
+                [style.backgroundColor]=""
+                alt
+              />
+            </div>
+            <h2 class="god-name">{{ god.name }}</h2>
+          </li> -->
+        <!-- </ng-container> -->
+      </ul>
+
+      <div #div></div>
+
+      <!-- <div class="error-container" *ngIf="error && gods">
+        <app-error-svg></app-error-svg>
+
+        <div class="error-msg">
+          <h2>Request Failed</h2>
+
+          <p>Please check your network and try again</p>
+        </div>
+      </div> -->
+    </section>
+  </section>
+
+  <!-- <div class="error-container outer" *ngIf="error && !gods">
+    <app-error-svg></app-error-svg>
+
+    <div class="error-msg">
+      <h2>Request Failed</h2>
+
+      <p>Please check your network and try again</p>
+    </div>
+  </div> -->
+
+  <router-outlet></router-outlet>
+</main>

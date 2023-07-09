@@ -1,0 +1,277 @@
+@import "../shared/shared";
+
+#gallery {
+  width: 100%;
+  min-height: toRem(320);
+  height: 100%;
+
+  // @media screen and (min-width: $two-xl) {
+  //   padding: 0 10%;
+  // }
+}
+
+.bg-img {
+  position: relative;
+  padding-top: toRem(80);
+  width: 100%;
+  height: floor(calc(34200 / 375)) * 1vw;
+  background-color: #89251a;
+  background-image: linear-gradient(
+    to bottom,
+    rgba(43, 47, 51, 0.05) 0%,
+    rgba(25, 28, 31, 0.5) 53%,
+    var(--gray-10) 100%
+  );
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center top;
+
+  @supports (aspect-ratio: 375/342) {
+    height: auto;
+    aspect-ratio: 375/342;
+  }
+
+  @media screen and (min-width: $md) {
+    margin-bottom: toRem(54);
+  }
+
+  @media screen and (min-width: $lg) {
+    min-height: toRem(600);
+    height: 100vh;
+  }
+
+  @media screen and (min-width: $two-xl) {
+    background-position: center 70%;
+  }
+
+  .content {
+    position: absolute;
+    bottom: toRem(40);
+    left: toRem(16);
+    max-width: toRem(302);
+    @include display-flex();
+    flex-direction: column;
+    justify-content: center;
+    gap: toRem(8);
+
+    @media screen and (min-width: $md) {
+      max-width: toRem(756);
+      bottom: toRem(97);
+      left: toRem(48);
+    }
+  }
+
+  .title {
+    font-size: toRem(32);
+    font-weight: 900;
+    line-height: 1.19;
+
+    @media screen and (min-width: $md) {
+      font-size: toRem(84);
+    }
+  }
+
+  .sub-title {
+    font-size: toRem(16);
+    font-weight: 500;
+    line-height: 1.5;
+    color: var(--gray-80);
+
+    @media screen and (min-width: $md) {
+      font-size: toRem(24);
+    }
+  }
+}
+
+.main-content {
+  width: 100%;
+  @include display-flex();
+
+  @media screen and (min-width: $xl) {
+    padding: toRem(24) toRem(24) 0;
+  }
+  @media screen and (min-width: $two-xl) {
+    padding: toRem(24) toRem(32) 0;
+  }
+}
+
+.products-container {
+  width: 100%;
+  padding: toRem(24) toRem(16) toRem(48);
+
+  @media screen and (min-width: $md) {
+    padding: toRem(24) toRem(24) toRem(48);
+  }
+  @media screen and (min-width: $lg) {
+    width: calc(100% - toRem(400));
+  }
+
+  .products-list {
+    list-style: none;
+    width: 100%;
+    @include display-flex();
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: toRem(32) toRem(16);
+
+    @media screen and (min-width: $md) {
+      justify-content: space-between;
+      gap: toRem(77) toRem(24);
+    }
+    @media screen and (min-width: $two-xl) {
+      gap: toRem(90) toRem(32);
+    }
+
+    .products {
+      cursor: pointer;
+      min-width: toRem(163);
+      width: 48.5%;
+      width: calc(50% - toRem(8));
+      @include column-centered-start();
+      gap: toRem(8);
+
+      @media screen and (min-width: $md) {
+        width: 48%;
+        gap: toRem(24);
+        width: calc(50% - toRem(12));
+      }
+      @media screen and (min-width: $two-xl) {
+        width: 33.33%;
+        width: calc(33.33% - toRem(calc(22)));
+      }
+    }
+  }
+
+  @supports (display: grid) {
+    .products-list {
+      list-style: none;
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(toRem(163), 1fr));
+      gap: toRem(32) toRem(16);
+
+      @media screen and (min-width: $md) {
+        grid-template-columns: repeat(2, minmax(toRem(163), 1fr));
+        gap: toRem(77) toRem(24);
+      }
+      @media screen and (min-width: $xl) {
+        grid-template-columns: repeat(auto-fill, minmax(toRem(360), 1fr));
+      }
+      @media screen and (min-width: $two-xl) {
+        gap: toRem(90) toRem(32);
+      }
+
+      .products {
+        cursor: pointer;
+        width: 100%;
+        @include column-centered-start();
+        gap: toRem(8);
+
+        @media screen and (min-width: $md) {
+          gap: toRem(24);
+        }
+      }
+    }
+  }
+
+  .img-cover {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1/1;
+    border-radius: toRem(4);
+    overflow: hidden;
+
+    @media screen and (min-width: $md) {
+      border-radius: toRem(10);
+    }
+
+    canvas {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      inset: 0;
+    }
+
+    img {
+      width: 100%;
+      height: auto;
+      background-color: inherit;
+    }
+  }
+
+  .god-name {
+    font-size: toRem(12);
+    font-weight: bold;
+    line-height: 1.17;
+    color: var(--gray-100);
+
+    @media screen and (min-width: $md) {
+      font-size: toRem(20);
+      font-weight: 500;
+      line-height: toRem(30);
+    }
+  }
+}
+
+.error-container {
+  width: 100%;
+  @include column-centered();
+  gap: toRem(12);
+
+  @media screen and (min-width: $two-xl) {
+    gap: 0;
+  }
+
+  &.outer {
+    padding-top: toRem(80);
+    justify-content: flex-start;
+    height: 100%;
+  }
+
+  app-error-svg {
+    width: 100%;
+    max-width: toRem(667);
+
+    @media screen and (min-width: $two-xl) {
+      max-width: toRem(768);
+    }
+
+    svg {
+      width: 100%;
+      height: auto;
+    }
+  }
+}
+
+.error-msg {
+  h2 {
+    font-size: toRem(42);
+    font-weight: bold;
+    line-height: 0.9;
+    color: var(--main-red);
+    text-align: center;
+    margin-bottom: toRem(40);
+
+    @media screen and (min-width: $md) {
+      font-size: toRem(72);
+      line-height: 1.39;
+      margin-bottom: toRem(28);
+    }
+    @media screen and (min-width: $two-xl) {
+      font-size: toRem(84);
+      line-height: 1.19;
+    }
+  }
+
+  p {
+    font-size: toRem(16);
+    font-weight: 500;
+    line-height: 1.5;
+    text-align: center;
+    color: var(--gray-80);
+
+    @media screen and (min-width: $md) {
+      font-size: toRem(24);
+    }
+  }
+}

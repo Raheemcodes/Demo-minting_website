@@ -1,0 +1,40 @@
+@import "./../shared/shared";
+
+.main-header {
+  position: absolute;
+  z-index: 5;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  @include display-flex();
+  justify-content: flex-end;
+  align-items: center;
+  padding: toRem(16);
+
+  @media (min-width: $two-xl) {
+    padding: toRem(24) toRem(60);
+  }
+}
+
+.cta-links-cover {
+  @include display-flex();
+  gap: toRem(24);
+
+  .cta {
+    width: toRem(120);
+    font-family: "Satoshi";
+    font-weight: 700;
+    font-size: toRem(12);
+    padding: toRem(16) 0;
+    color: var(--gray-10);
+    background-color: var(--gray-100);
+    border-radius: toRem(8);
+
+    @media (min-width: $two-xl) {
+      font-size: toRem(16);
+      width: toRem(180);
+      gap: toRem(48);
+    }
+  }
+}
