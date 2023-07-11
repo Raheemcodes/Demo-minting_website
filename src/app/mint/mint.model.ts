@@ -1,3 +1,5 @@
+import { AzukiTrans } from '../../../../hardhat/typechain-types/contracts/AzukiTrans';
+
 export interface NFT {
   name: string;
   image: string;
@@ -17,30 +19,8 @@ export interface Blur {
   };
 }
 
-// export interface GodList {
-//   total: number;
-//   length: number;
-//   data: God[];
-//   next: null | string;
-// }
-
-// export interface GodComplex {
-//   name: string;
-//   media: {
-//     uri: string;
-//     blurhash: string;
-//   };
-//   description: {
-//     role: string;
-//     lore: string;
-//   };
-//   metadata: { name: string; value: string }[];
-//   navigation: {
-//     prev: string;
-//     next: string;
-//   };
-//   external_links: {
-//     souffl3: string;
-//     topaz: string;
-//   };
-// }
+export interface Mint {
+  priceGWei: bigint;
+  time: AzukiTrans.MintTimeStructOutput;
+  total: bigint;
+}
