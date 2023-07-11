@@ -10,7 +10,7 @@
                 {{ getDate(mint.time.start) }}
                 <span class="bold">{{ getLocaleTime(mint.time.start) }}</span>
               </span>
-              <span>[ In 2 days 58 hours 30 mins ]</span>
+              <span>[ {{ startTime }} ]</span>
             </dd>
           </div>
 
@@ -23,7 +23,7 @@
                   getLocaleTime(mint.time.publicSale)
                 }}</span>
               </span>
-              <span>[ In 2 days 58 hours 30 mins ]</span>
+              <span>[ {{ publicsaleTime }} ]</span>
             </dd>
           </div>
 
@@ -34,7 +34,7 @@
                 {{ getDate(mint.time.end) }}
                 <span class="bold">{{ getLocaleTime(mint.time.end) }}</span>
               </span>
-              <span>[ In 2 days 58 hours 30 mins ]</span>
+              <span>[ {{ endTime }} ]</span>
             </dd>
           </div>
         </dl>
@@ -51,12 +51,17 @@
           >
             <path class="track" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
             <path
-              style="stroke-dashoffset: -200.99078369140625"
+              [ngStyle]="{
+                'stroke-dashoffset':
+                  ((100 - mintedSupply) / 100) * -219.99078369140625
+              }"
               class="fill"
               d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0"
             />
           </svg>
-          <div class="mint-status">20 / 100</div>
+          <div class="mint-status">
+            {{ mintedSupply || 0 }} / {{ totalSupply || 0 }}
+          </div>
         </div>
       </div>
     </div>
