@@ -14,7 +14,10 @@ import Web3 from 'web3';
   imports: [BrowserModule, AppRoutingModule, ErrorSvgComponent],
   providers: [
     { provide: 'Window', useValue: window },
-    { provide: 'Web3', useValue: new Web3(Web3.givenProvider) },
+    {
+      provide: 'Web3',
+      useValue: new Web3(Web3.givenProvider || 'ws://localhost:8545'),
+    },
   ],
 
   bootstrap: [AppComponent],

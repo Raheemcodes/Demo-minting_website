@@ -1,13 +1,13 @@
-import { DOCUMENT } from '@angular/common';
 import {
+  ChangeDetectorRef,
   Component,
   ElementRef,
   Inject,
   OnInit,
-  Renderer2,
   ViewChild,
 } from '@angular/core';
 
+import Web3, { Web3BaseProvider } from 'web3';
 import { SharedService } from '../shared/shared.service';
 
 @Component({
@@ -20,16 +20,62 @@ export class HeaderComponent implements OnInit {
   @ViewChild('toggleBtn') toggleBtn!: ElementRef<HTMLElement>;
   isOpen: boolean = false;
   isAnimating: boolean = false;
+  account!: string;
 
   constructor(
-    private renderer: Renderer2,
     private sharedService: SharedService,
-    @Inject(DOCUMENT) private document: Document
+    private cd: ChangeDetectorRef,
+    @Inject('Web3') private web3: Web3,
+    @Inject('Window') private window: Window
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.getAccount();
+  }
 
-  connect() {
-    this.sharedService.connectWallet();
+  concatenateAccount(account: string): void {
+    this.account = account?.slice(0, 6).padEnd(10, '.') + account?.slice(-4);
+    this.cd.detectChanges();
+  }
+
+  getAccount() {
+    this.sharedService.account$.subscribe({
+      next: (account) => {
+        this.concatenateAccount(account);
+      },
+      error: (err) => {
+        console.error(err);
+      },
+    });
+  }
+
+  async connect() {
+    if ('ethereum' in this.window) {
+      try {
+        const response = await (
+          this.window.ethereum as Web3BaseProvider
+        ).request({
+          method: 'eth_requestAccounts',
+        });
+
+        const accounts = response as unknown as string[];
+
+        this.sharedService.account$.next(accounts[0]);
+
+        (<Web3BaseProvider>this.window.ethereum).on(
+          'accountsChanged',
+          (newAccounts) => {
+            this.sharedService.account$.next(newAccounts[0]);
+            console.log('Updated Account:', newAccounts[0]);
+          }
+        );
+
+        console.log('Account connected:', accounts[0]);
+      } catch (err) {
+        this.sharedService.account$.error(err);
+      }
+    } else {
+      console.error('MetaMask or Trust Wallet not available.');
+    }
   }
 }
