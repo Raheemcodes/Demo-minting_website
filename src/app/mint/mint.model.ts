@@ -11,14 +11,6 @@ export interface NFT {
   owner?: string;
 }
 
-export interface Blur {
-  data: {
-    code: string;
-    x: number;
-    y: number;
-  };
-}
-
 export interface Mint {
   priceGWei: bigint;
   time: AzukiTrans.MintTimeStructOutput;

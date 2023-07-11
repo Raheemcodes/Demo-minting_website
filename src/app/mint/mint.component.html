@@ -1,12 +1,15 @@
 <main id="gallery">
   <section class="bg-img">
     <div class="content">
-      <div class="mint-time">
+      <div class="mint-time" *ngIf="mint">
         <dl>
           <div class="time-item">
             <dt>Mint time</dt>
             <dd>
-              <span class="bold">Sun Jul 09 2023 <b>07:00</b></span>
+              <span class="thick">
+                {{ getDate(mint.time.start) }}
+                <span class="bold">{{ getLocaleTime(mint.time.start) }}</span>
+              </span>
               <span>[ In 2 days 58 hours 30 mins ]</span>
             </dd>
           </div>
@@ -14,7 +17,12 @@
           <div class="time-item">
             <dt>Public sale</dt>
             <dd>
-              <span class="bold">Sun Jul 09 2023 <b>07:00</b></span>
+              <span class="thick">
+                {{ getDate(mint.time.publicSale) }}
+                <span class="bold">{{
+                  getLocaleTime(mint.time.publicSale)
+                }}</span>
+              </span>
               <span>[ In 2 days 58 hours 30 mins ]</span>
             </dd>
           </div>
@@ -22,7 +30,10 @@
           <div class="time-item">
             <dt>Mint Ends</dt>
             <dd>
-              <span class="bold">Sun Jul 09 2023 <b>07:00</b></span>
+              <span class="thick">
+                {{ getDate(mint.time.end) }}
+                <span class="bold">{{ getLocaleTime(mint.time.end) }}</span>
+              </span>
               <span>[ In 2 days 58 hours 30 mins ]</span>
             </dd>
           </div>

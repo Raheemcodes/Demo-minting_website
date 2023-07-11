@@ -1,4 +1,3 @@
-import { AzukiTrans } from './../../../../hardhat/typechain-types/contracts/AzukiTrans';
 import { Component, Inject, OnInit } from '@angular/core';
 import { environment } from 'src/environments/environment.development';
 import Web3 from 'web3';
@@ -16,6 +15,10 @@ export class MintComponent implements OnInit {
   error: boolean = false;
   contract = new this.web3.eth.Contract(AzukiTransAbi, environment.address);
   account!: string;
+  mint!: Mint;
+  startTime!: string;
+  publicsaleTime!: string;
+  endTime!: string;
 
   constructor(
     private sharedService: SharedService,
@@ -38,9 +41,21 @@ export class MintComponent implements OnInit {
     });
   }
 
-  async getMintDetails() {
-    const mint: Mint = await this.contract.methods.mint().call();
+  getDate(time: BigInt): string {
+    const date = new Date(Number(time) * 1000);
+    return date.toDateString();
+  }
 
-    console.log(mint.time.start);
+  getLocaleTime(time: BigInt): string {
+    const date = new Date(Number(time) * 1000);
+
+    return date.toLocaleTimeString('uk', {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  }
+
+  async getMintDetails() {
+    this.mint = await this.contract.methods.mint().call();
   }
 }
