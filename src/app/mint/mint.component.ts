@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { interval, timer } from 'rxjs';
+import { Observable, Subscription, interval, map, timer } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 import Web3 from 'web3';
 import { SharedService } from '../shared/shared.service';
@@ -20,8 +20,9 @@ export class MintComponent implements OnInit {
   startTime!: string;
   publicsaleTime!: string;
   endTime!: string;
-  mintedSupply!: number;
-  totalSupply!: number;
+  mintedSupply: number = 0;
+  totalSupply: number = 0;
+  sub: Subscription[] = [];
 
   constructor(
     private sharedService: SharedService,
@@ -116,12 +117,39 @@ export class MintComponent implements OnInit {
     });
   }
 
+  loopSupply(mintedSupply: number, totalSupply: number) {
+    this.sub[0] = this.loopTo(mintedSupply, 0).subscribe((val: number) => {
+      this.mintedSupply = val;
+    });
+
+    this.sub[1] = this.loopTo(totalSupply, 1).subscribe((val: number) => {
+      this.totalSupply = val;
+    });
+  }
+
+  loopTo(to: number, idx: number): Observable<number> {
+    let count: number = 0;
+
+    return interval(1000 / to).pipe(
+      map(() => {
+        if (count == to) this.sub[idx].unsubscribe();
+        count++;
+
+        return count;
+      })
+    );
+  }
+
   async getMintDetails() {
     try {
       this.isLoading = true;
       this.mint = await this.contract.methods.mint().call();
-      this.totalSupply = await this.contract.methods.totalSupply().call();
-      this.mintedSupply = Number(this.mint.total);
+      const totalSupply = Number(
+        await this.contract.methods.totalSupply().call()
+      );
+      const mintedSupply = Number(this.mint.total);
+
+      this.loopSupply(mintedSupply, totalSupply);
       this.updateTime();
       this.isLoading = false;
     } catch (err) {
