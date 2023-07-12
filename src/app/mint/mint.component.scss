@@ -55,6 +55,10 @@
       @media screen and (min-width: $md) {
         gap: 1rem;
       }
+
+      .skeleton {
+        border-radius: toRem(4);
+      }
     }
 
     dt {

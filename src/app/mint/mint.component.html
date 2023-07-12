@@ -1,22 +1,32 @@
 <main id="gallery">
   <section class="bg-img">
     <div class="content">
-      <div class="mint-time" *ngIf="mint">
+      <div class="mint-time">
         <dl>
           <div class="time-item">
             <dt>Mint time</dt>
-            <dd>
+
+            <dd *ngIf="!isLoading">
               <span class="thick">
                 {{ getDate(mint.time.start) }}
                 <span class="bold">{{ getLocaleTime(mint.time.start) }}</span>
               </span>
               <span>[ {{ startTime }} ]</span>
             </dd>
+
+            <dd *ngIf="isLoading">
+              <span class="thick skeleton">
+                Thu Jul 24 3000
+                <span class="bold">12:35</span>
+              </span>
+              <span class="skeleton">[ In 356854 days 1 hour 22 mins ]</span>
+            </dd>
           </div>
 
           <div class="time-item">
             <dt>Public sale</dt>
-            <dd>
+
+            <dd *ngIf="!isLoading">
               <span class="thick">
                 {{ getDate(mint.time.publicSale) }}
                 <span class="bold">{{
@@ -25,16 +35,33 @@
               </span>
               <span>[ {{ publicsaleTime }} ]</span>
             </dd>
+
+            <dd *ngIf="isLoading">
+              <span class="thick skeleton">
+                Thu Jul 24 3000
+                <span class="bold">12:35</span>
+              </span>
+              <span class="skeleton">[ In 356854 days 1 hour 22 mins ]</span>
+            </dd>
           </div>
 
           <div class="time-item">
             <dt>Mint Ends</dt>
-            <dd>
+
+            <dd *ngIf="!isLoading">
               <span class="thick">
                 {{ getDate(mint.time.end) }}
                 <span class="bold">{{ getLocaleTime(mint.time.end) }}</span>
               </span>
               <span>[ {{ endTime }} ]</span>
+            </dd>
+
+            <dd *ngIf="isLoading">
+              <span class="thick skeleton">
+                Thu Jul 24 3000
+                <span class="bold">12:35</span>
+              </span>
+              <span class="skeleton">[ In 356854 days 1 hour 22 mins ]</span>
             </dd>
           </div>
         </dl>
