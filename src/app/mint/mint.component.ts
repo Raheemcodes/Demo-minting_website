@@ -1,10 +1,10 @@
 import { Component, Inject, OnInit } from '@angular/core';
+import { interval, timer } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 import Web3 from 'web3';
 import { SharedService } from '../shared/shared.service';
 import AzukiTransAbi from './AzukiTransAbi';
 import { Mint } from './mint.model';
-import { interval, min } from 'rxjs';
 
 @Component({
   selector: 'app-mint',
@@ -12,7 +12,7 @@ import { interval, min } from 'rxjs';
   styleUrls: ['./mint.component.scss'],
 })
 export class MintComponent implements OnInit {
-  isLoading: boolean = false;
+  _isLoading: boolean = false;
   error: boolean = false;
   contract = new this.web3.eth.Contract(AzukiTransAbi, environment.address);
   account!: string;
@@ -27,6 +27,19 @@ export class MintComponent implements OnInit {
     private sharedService: SharedService,
     @Inject('Web3') private web3: Web3
   ) {}
+
+  set isLoading(val: boolean) {
+    if (val) this._isLoading = val;
+    else {
+      timer(3000).subscribe(() => {
+        this._isLoading = val;
+      });
+    }
+  }
+
+  get isLoading(): boolean {
+    return this._isLoading;
+  }
 
   ngOnInit(): void {
     this.getAccount();
@@ -104,9 +117,15 @@ export class MintComponent implements OnInit {
   }
 
   async getMintDetails() {
-    this.mint = await this.contract.methods.mint().call();
-    this.totalSupply = await this.contract.methods.totalSupply().call();
-    this.mintedSupply = Number(this.mint.total);
-    this.updateTime();
+    try {
+      this.isLoading = true;
+      this.mint = await this.contract.methods.mint().call();
+      this.totalSupply = await this.contract.methods.totalSupply().call();
+      this.mintedSupply = Number(this.mint.total);
+      this.updateTime();
+      this.isLoading = false;
+    } catch (err) {
+      console.error(err);
+    }
   }
 }
