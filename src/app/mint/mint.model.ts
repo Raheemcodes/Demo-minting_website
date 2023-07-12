@@ -16,3 +16,9 @@ export interface Mint {
   time: AzukiTrans.MintTimeStructOutput;
   total: bigint;
 }
+
+export interface Transfer {
+  from: string;
+  to: string;
+  tokenId: bigint;
+}

@@ -49,33 +49,7 @@ export class HeaderComponent implements OnInit {
     });
   }
 
-  async connect() {
-    if ('ethereum' in this.window) {
-      try {
-        const response = await (
-          this.window.ethereum as Web3BaseProvider
-        ).request({
-          method: 'eth_requestAccounts',
-        });
-
-        const accounts = response as unknown as string[];
-
-        this.sharedService.account$.next(accounts[0]);
-
-        (<Web3BaseProvider>this.window.ethereum).on(
-          'accountsChanged',
-          (newAccounts) => {
-            this.sharedService.account$.next(newAccounts[0]);
-            console.log('Updated Account:', newAccounts[0]);
-          }
-        );
-
-        console.log('Account connected:', accounts[0]);
-      } catch (err) {
-        this.sharedService.account$.error(err);
-      }
-    } else {
-      console.error('MetaMask or Trust Wallet not available.');
-    }
+  connect() {
+    this.sharedService.connect();
   }
 }
