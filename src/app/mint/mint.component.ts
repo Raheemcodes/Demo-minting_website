@@ -4,7 +4,8 @@ import { environment } from 'src/environments/environment.development';
 import Web3 from 'web3';
 import { SharedService } from '../shared/shared.service';
 import AzukiTransAbi from './AzukiTransAbi';
-import { Mint } from './mint.model';
+import { Mint, NFT } from './mint.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-mint',
@@ -14,6 +15,7 @@ import { Mint } from './mint.model';
 export class MintComponent implements OnInit {
   _isLoading: boolean = false;
   error: boolean = false;
+  ctrlDown: boolean = false;
   contract = new this.web3.eth.Contract(AzukiTransAbi, environment.address);
   account!: string;
   mint!: Mint;
@@ -23,9 +25,29 @@ export class MintComponent implements OnInit {
   mintedSupply: number = 0;
   totalSupply: number = 0;
   sub: Subscription[] = [];
+  nfts: NFT[] = [
+    {
+      name: 'Azuki',
+      owner: '0x0fljflkf9400',
+      image: '../../../assets/team/Age.jpg',
+      attributes: [
+        { trait_type: 'Hair', value: 'Blue' },
+        { trait_type: 'Hair', value: 'Blue' },
+        { trait_type: 'Hair', value: 'Blue' },
+        { trait_type: 'Hair', value: 'Blue' },
+        { trait_type: 'Hair', value: 'Blue' },
+        { trait_type: 'Hair', value: 'Blue' },
+      ],
+      navigation: {
+        next: '456',
+        prev: '123',
+      },
+    },
+  ];
 
   constructor(
     private sharedService: SharedService,
+    private router: Router,
     @Inject('Web3') private web3: Web3
   ) {}
 
@@ -45,6 +67,21 @@ export class MintComponent implements OnInit {
   ngOnInit(): void {
     this.getAccount();
     this.getMintDetails();
+    this.onMint();
+  }
+
+  trackBy(index: number, nft: NFT): number {
+    return index;
+  }
+
+  generateNumArr(num: number): number[] {
+    return this.sharedService.generateNumArr(num);
+  }
+
+  navigate(route: string) {
+    const [name, id] = route.split('#');
+    if (this.ctrlDown) window.open(location.href + '/' + route, '_blank');
+    else this.router.navigate(['gallery', id]);
   }
 
   getAccount() {
@@ -138,6 +175,15 @@ export class MintComponent implements OnInit {
         return count;
       })
     );
+  }
+
+  onMint() {
+    this.contract.events.Transfer().on('data', console.log);
+  }
+
+  safeMint() {
+    console.log('Mint');
+    this.contract.methods.safeMint().send({ from: this.account });
   }
 
   async getMintDetails() {

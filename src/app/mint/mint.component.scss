@@ -235,6 +235,7 @@
     aspect-ratio: 1/1;
     border-radius: toRem(4);
     overflow: hidden;
+    background-color: var(--gray-60);
 
     @media screen and (min-width: $md) {
       border-radius: toRem(10);
