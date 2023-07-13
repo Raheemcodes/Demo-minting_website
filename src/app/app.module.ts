@@ -23,7 +23,7 @@ import Web3 from 'web3';
     { provide: 'Window', useValue: window },
     {
       provide: 'Web3',
-      useValue: new Web3(Web3.givenProvider),
+      useValue: new Web3((<any>window).ethereum),
     },
   ],
 

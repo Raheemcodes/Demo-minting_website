@@ -1,3 +1,3 @@
 export const environment = {
-  address: '0xE8addD62feD354203d079926a8e563BC1A7FE81e',
+  address: '0x570F9c6182f9e2cda7B12dD6fB769cC62E3575BD',
 };

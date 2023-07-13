@@ -1,4 +1,4 @@
-<main id="gallery">
+<main id="gallery" *ngIf="account">
   <section class="bg-img">
     <div class="content">
       <div class="mint-time">
@@ -93,7 +93,7 @@
     </div>
   </section>
 
-  <section class="main-content">
+  <section class="main-content" *ngIf="account">
     <section class="products-container" #ul>
       <ul
         class="products-list"
@@ -107,20 +107,13 @@
           </div>
 
           <button
-            [ngClass]="{ 'mint-btn': true, skeleton: isLoading || isMint }"
+            [ngClass]="{ 'mint-btn': true }"
             title="Mint now"
             (click)="safeMint()"
           >
             Mint
           </button>
         </li>
-
-        <ng-container *ngIf="isMint && !error">
-          <li class="products">
-            <div class="img-cover skeleton"></div>
-            <h2 class="god-name skeleton">Demo</h2>
-          </li>
-        </ng-container>
 
         <ng-container>
           <li

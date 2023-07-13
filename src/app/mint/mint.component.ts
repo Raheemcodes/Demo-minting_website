@@ -234,7 +234,7 @@ export class MintComponent implements OnInit {
 
     if (this.account) {
       try {
-        // this.contract.handleRevert = true;
+        this.contract.handleRevert = true;
 
         await this.contract.methods.safeMint().send({
           from: this.account,
@@ -244,7 +244,6 @@ export class MintComponent implements OnInit {
         console.log('Minted Succesfully');
       } catch (err: any) {
         this.isMint = false;
-        this.error = true;
         this.cd.detectChanges();
 
         console.error(this.web3.utils.hexToAscii(err.data).trim());

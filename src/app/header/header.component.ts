@@ -24,9 +24,7 @@ export class HeaderComponent implements OnInit {
 
   constructor(
     private sharedService: SharedService,
-    private cd: ChangeDetectorRef,
-    @Inject('Web3') private web3: Web3,
-    @Inject('Window') private window: Window
+    private cd: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
