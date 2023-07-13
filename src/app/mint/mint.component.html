@@ -6,7 +6,7 @@
           <div class="time-item">
             <dt>Mint time</dt>
 
-            <dd *ngIf="!isLoading">
+            <dd *ngIf="!isLoading && !error">
               <span class="thick">
                 {{ getDate(mint.time.start) }}
                 <span class="bold">{{ getLocaleTime(mint.time.start) }}</span>
@@ -14,7 +14,7 @@
               <span>[ {{ startTime }} ]</span>
             </dd>
 
-            <dd *ngIf="isLoading">
+            <dd *ngIf="isLoading && !error">
               <span class="thick skeleton">
                 Thu Jul 24 3000
                 <span class="bold">12:35</span>
@@ -26,7 +26,7 @@
           <div class="time-item">
             <dt>Public sale</dt>
 
-            <dd *ngIf="!isLoading">
+            <dd *ngIf="!isLoading && !error">
               <span class="thick">
                 {{ getDate(mint.time.publicSale) }}
                 <span class="bold">{{
@@ -36,7 +36,7 @@
               <span>[ {{ publicsaleTime }} ]</span>
             </dd>
 
-            <dd *ngIf="isLoading">
+            <dd *ngIf="isLoading && !error">
               <span class="thick skeleton">
                 Thu Jul 24 3000
                 <span class="bold">12:35</span>
@@ -48,7 +48,7 @@
           <div class="time-item">
             <dt>Mint Ends</dt>
 
-            <dd *ngIf="!isLoading">
+            <dd *ngIf="!isLoading && !error">
               <span class="thick">
                 {{ getDate(mint.time.end) }}
                 <span class="bold">{{ getLocaleTime(mint.time.end) }}</span>
@@ -56,7 +56,7 @@
               <span>[ {{ endTime }} ]</span>
             </dd>
 
-            <dd *ngIf="isLoading">
+            <dd *ngIf="isLoading && !error">
               <span class="thick skeleton">
                 Thu Jul 24 3000
                 <span class="bold">12:35</span>
@@ -80,7 +80,8 @@
             <path
               [ngStyle]="{
                 'stroke-dashoffset':
-                  ((100 - mintedSupply) / 100) * -219.99078369140625
+                  ((totalSupply - mintedSupply) / totalSupply) *
+                  -219.99078369140625
               }"
               class="fill"
               d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0"
@@ -98,24 +99,33 @@
         class="products-list"
         [attr.style]="isLoading ? 'overflow: hidden' : ''"
       >
-        <li class="products normal-cursor">
+        <li class="products normal-cursor" *ngIf="!error">
           <div class="img-cover null">
             <div class="line-left"></div>
             <div class="line-right"></div>
             <div class="question_mark">?</div>
           </div>
 
-          <button class="mint-btn" title="Mint now" (click)="safeMint()">
+          <button
+            [ngClass]="{ 'mint-btn': true, skeleton: isLoading || isMint }"
+            title="Mint now"
+            (click)="safeMint()"
+          >
             Mint
           </button>
         </li>
 
-        <ng-container *ngIf="!isLoading && nfts.length > 0 && !error">
+        <ng-container *ngIf="isMint && !error">
+          <li class="products">
+            <div class="img-cover skeleton"></div>
+            <h2 class="god-name skeleton">Demo</h2>
+          </li>
+        </ng-container>
+
+        <ng-container>
           <li
             class="products"
-            *ngFor="let nft of nfts; trackBy: trackBy"
-            (window:keydown.Control)="ctrlDown = true"
-            (window:keyup.Control)="ctrlDown = false"
+            *ngFor="let nft of nfts"
             (click)="navigate(nft.name)"
             [title]="nft.name"
           >
@@ -131,18 +141,9 @@
             <h2 class="god-name">{{ nft.name }}</h2>
           </li>
         </ng-container>
-
-        <ng-container *ngIf="isLoading">
-          <li class="products" *ngFor="let demo of generateNumArr(4)">
-            <div class="img-cover skeleton"></div>
-            <h2 class="god-name skeleton">Demo</h2>
-          </li>
-        </ng-container>
       </ul>
 
-      <div #div></div>
-
-      <!-- <div class="error-container" *ngIf="error && gods">
+      <div class="error-container" *ngIf="error && nfts.length">
         <app-error-svg></app-error-svg>
 
         <div class="error-msg">
@@ -150,11 +151,11 @@
 
           <p>Please check your network and try again</p>
         </div>
-      </div> -->
+      </div>
     </section>
   </section>
 
-  <!-- <div class="error-container outer" *ngIf="error && !gods">
+  <div class="error-container outer" *ngIf="error && !nfts.length">
     <app-error-svg></app-error-svg>
 
     <div class="error-msg">
@@ -162,7 +163,7 @@
 
       <p>Please check your network and try again</p>
     </div>
-  </div> -->
+  </div>
 
   <router-outlet></router-outlet>
 </main>

@@ -10,6 +10,8 @@ import { NFT } from '../mint/mint.model';
 export class SharedService implements OnInit {
   account!: string;
   account$ = new Subject<string>();
+  nfts: NFT[] = [];
+  nfts$ = new Subject<NFT[]>();
 
   constructor(
     private http: HttpClient,
@@ -18,6 +20,20 @@ export class SharedService implements OnInit {
   ) {}
 
   ngOnInit(): void {}
+
+  setAccount(account: string) {
+    this.account = account;
+    this.account$.next(account);
+  }
+
+  setNft(nft: NFT) {
+    this.nfts.unshift(nft);
+    this.nfts$.next(this.nfts);
+  }
+
+  concatenateAccount(account: string): string {
+    return account?.slice(0, 6).padEnd(10, '.') + account?.slice(-4);
+  }
 
   generateNumArr(num: number): number[] {
     const array: number[] = [];
@@ -36,12 +52,12 @@ export class SharedService implements OnInit {
 
         const accounts = response as unknown as string[];
 
-        this.account$.next(accounts[0]);
+        this.setAccount(accounts[0]);
 
         (<Web3BaseProvider>this.window.ethereum).on(
           'accountsChanged',
           (newAccounts) => {
-            this.account$.next(newAccounts[0]);
+            this.setAccount(newAccounts[0]);
             console.log('Updated Account:', newAccounts[0]);
           }
         );
@@ -55,17 +71,25 @@ export class SharedService implements OnInit {
     }
   }
 
-  fetchNFT(idx: number): Observable<NFT> {
+  getIdx(name: string): string {
+    return name.split('#')[1];
+  }
+
+  fetchNFT(idx: number, owner: string): Observable<NFT> {
     return this.http
       .get<NFT>(
         `https://ipfs.io/ipfs/QmZcH4YvBVVRJtdn4RdbaqgspFU8gH6P9vomDpBVpAL3u4/${idx}`
       )
       .pipe(
         map((nft) => {
-          return {
+          const mappedNft: NFT = {
             ...nft,
             image: nft.image.replace('ipfs://', 'https://ipfs.io/ipfs/'),
+            owner,
           };
+
+          this.setNft(mappedNft);
+          return mappedNft;
         })
       );
   }

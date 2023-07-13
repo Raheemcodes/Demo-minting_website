@@ -330,9 +330,9 @@
   }
 
   &.outer {
-    padding-top: toRem(80);
+    padding: toRem(80) 0;
     justify-content: flex-start;
-    height: 100%;
+    // height: 100%;
   }
 
   app-error-svg {

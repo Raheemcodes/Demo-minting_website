@@ -19,7 +19,6 @@
             class="product-img"
             width="444"
             height="444"
-            loading="lazy"
             [src]="nft.image"
             alt
           />
@@ -28,8 +27,8 @@
         <button
           *ngIf="nft?.navigation?.next"
           class="nav-btn next"
-          (click)="navigate(nft.navigation.next)"
-          (window:keydown.ArrowRight)="navigate(nft.navigation.next)"
+          (click)="navigate(nft.navigation.next!)"
+          (window:keydown.ArrowRight)="navigate(nft.navigation.next!)"
           title="Next"
         >
           <img
@@ -43,8 +42,8 @@
         <button
           *ngIf="nft?.navigation?.prev"
           class="nav-btn prev"
-          (click)="navigate(nft.navigation.prev)"
-          (window:keydown.ArrowLeft)="navigate(nft.navigation.prev)"
+          (click)="navigate(nft.navigation.prev!)"
+          (window:keydown.ArrowLeft)="navigate(nft.navigation.prev!)"
           title="Previous"
         >
           <img
@@ -65,7 +64,7 @@
         </p>
         <p *ngIf="!isLoading" class="sub-title" [title]="nft.owner">
           <ng-container *ngIf="nft.owner">
-            Owner: {{ nft.owner }}
+            Owner: {{ concatenateAccount(nft.owner) }}
           </ng-container>
         </p>
 
@@ -78,7 +77,7 @@
           <ul class="gods-traits">
             <ng-container *ngIf="isLoading">
               <li
-                *ngFor="let trait of [1, 2, 3, 4, 5, 6]"
+                *ngFor="let trait of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
                 [ngClass]="{ trait: true, skeleton: true }"
               >
                 <div class="criteria-container">

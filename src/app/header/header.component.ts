@@ -34,7 +34,7 @@ export class HeaderComponent implements OnInit {
   }
 
   concatenateAccount(account: string): void {
-    this.account = account?.slice(0, 6).padEnd(10, '.') + account?.slice(-4);
+    this.account = this.sharedService.concatenateAccount(account);
     this.cd.detectChanges();
   }
 

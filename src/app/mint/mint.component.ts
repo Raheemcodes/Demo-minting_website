@@ -1,5 +1,11 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, Inject, OnInit, ChangeDetectorRef } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  Inject,
+  OnInit,
+  NgZone,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, Subscription, interval, map, timer } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
@@ -16,7 +22,7 @@ import { Mint, NFT, Transfer } from './mint.model';
 export class MintComponent implements OnInit {
   _isLoading: boolean = false;
   error: boolean = false;
-  ctrlDown: boolean = false;
+
   isMint: boolean = false;
   contract = new this.web3.eth.Contract(AzukiTransAbi, environment.address);
   account!: string;
@@ -27,31 +33,15 @@ export class MintComponent implements OnInit {
   mintedSupply: number = 0;
   totalSupply: number = 0;
   sub: Subscription[] = [];
-  nfts: NFT[] = [
-    {
-      name: 'Azuki#101',
-      owner: '0x0fljflkf9400',
-      image:
-        'https://ipfs.io/ipfs/QmYDvPAXtiJg7s8JdRBSLWdgSphQdac8j1YuQNNxcGE1hg/101.png',
-      attributes: [
-        { trait_type: 'Hair', value: 'Blue' },
-        { trait_type: 'Hair', value: 'Blue' },
-        { trait_type: 'Hair', value: 'Blue' },
-        { trait_type: 'Hair', value: 'Blue' },
-        { trait_type: 'Hair', value: 'Blue' },
-        { trait_type: 'Hair', value: 'Blue' },
-      ],
-      navigation: {
-        next: '456',
-        prev: '123',
-      },
-    },
-  ];
+  nfts: NFT[] = [];
+  screenWidth: number = this.window.innerWidth;
 
   constructor(
     private sharedService: SharedService,
     private router: Router,
     private cd: ChangeDetectorRef,
+    private zone: NgZone,
+    @Inject('Window') private window: Window,
     @Inject('Web3') private web3: Web3
   ) {}
 
@@ -78,14 +68,21 @@ export class MintComponent implements OnInit {
     return index;
   }
 
-  generateNumArr(num: number): number[] {
+  generateNumArr(): number[] {
+    let num: number;
+
+    if (this.screenWidth >= 1536) num = 5;
+    else if (this.screenWidth >= 1280) num = 4;
+    else if (this.screenWidth >= 561) num = 3;
+    else num = 2;
+
     return this.sharedService.generateNumArr(num);
   }
 
   navigate(route: string) {
     const [name, id] = route.split('#');
-    if (this.ctrlDown) window.open(location.href + '/' + route, '_blank');
-    else this.router.navigate(['nft', id]);
+
+    this.zone.run(() => this.router.navigate(['nft', id]));
   }
 
   getAccount() {
@@ -123,7 +120,9 @@ export class MintComponent implements OnInit {
 
     const days = Math.floor(Math.abs(duration) / oneDay);
     const hours = Math.floor((Math.abs(duration) % oneDay) / oneHour);
-    const mins = Math.floor(((Math.abs(duration) % oneDay) % oneHour) / oneMin);
+    const mins = Math[duration < 0 ? 'floor' : 'ceil'](
+      ((Math.abs(duration) % oneDay) % oneHour) / oneMin
+    );
 
     const remainingDays = !days ? '' : `${days} ${days > 1 ? 'days' : 'day'}`;
     const remainingHours = !hours
@@ -131,7 +130,7 @@ export class MintComponent implements OnInit {
       : `${hours} ${hours > 1 ? 'hours' : 'hour'}`;
     const remainingMins = !mins ? '' : `${mins} ${mins > 1 ? 'mins' : 'min'}`;
     const remainingTime: string =
-      Math.abs(duration) < oneMin
+      duration < 0 && duration > -oneMin
         ? 'Now!!!'
         : `${
             duration > 0 ? 'In' : ''
@@ -150,14 +149,9 @@ export class MintComponent implements OnInit {
 
   updateTime() {
     this.setTime();
-    let period: number = 60 * 1000 - new Date().getSeconds();
 
-    interval(period).subscribe(() => {
-      period = 60 * 1000;
-
-      this.startTime = this.formatTime(this.mint.time.start);
-      this.publicsaleTime = this.formatTime(this.mint.time.publicSale);
-      this.endTime = this.formatTime(this.mint.time.end);
+    interval(60 * 1000).subscribe(() => {
+      this.setTime();
     });
   }
 
@@ -166,9 +160,7 @@ export class MintComponent implements OnInit {
       this.mintedSupply = val;
     });
 
-    this.sub[1] = this.loopTo(totalSupply, 1).subscribe((val: number) => {
-      this.totalSupply = val;
-    });
+    this.totalSupply = totalSupply;
   }
 
   loopTo(to: number, idx: number): Observable<number> {
@@ -185,19 +177,39 @@ export class MintComponent implements OnInit {
   }
 
   onTransfer() {
-    this.contract.events.Transfer().on('data', (event) => {
+    const DEFAULT_ADDRESS = '0x0000000000000000000000000000000000000000';
+
+    const sub = this.contract.events.Transfer({
+      filter: { from: DEFAULT_ADDRESS },
+    });
+
+    sub.on('data', (event) => {
       const transfer: Transfer = event.returnValues as any;
 
+      this.mintedSupply++;
       this.getNft(Number(transfer.tokenId), transfer.to);
+    });
+
+    sub.on('error', (err) => {
+      this.error = true;
+      console.error(err);
     });
   }
 
   getNft(idx: number, owner: string) {
-    this.sharedService.fetchNFT(idx).subscribe({
+    this.error = false;
+
+    this.sharedService.fetchNFT(idx, owner).subscribe({
       next: (nft) => {
-        this.addNft(nft);
+        this.isMint = false;
+
+        timer(3000).subscribe(() => {
+          this.addNft(nft);
+        });
       },
       error: (err: HttpErrorResponse) => {
+        this.error = true;
+        this.isMint = false;
         console.error(err);
       },
       complete: () => {
@@ -208,26 +220,34 @@ export class MintComponent implements OnInit {
 
   addNft(nft: NFT) {
     this.nfts.unshift(nft);
-    this.mintedSupply++;
+
     this.cd.detectChanges();
   }
 
   async safeMint() {
+    if (this.isLoading) return;
+
     this.isMint = true;
+    this.error = false;
+
+    this.cd.detectChanges();
 
     if (this.account) {
       try {
-        this.contract.handleRevert = true;
-        const txHash = await this.contract.methods.safeMint().send({
+        // this.contract.handleRevert = true;
+
+        await this.contract.methods.safeMint().send({
           from: this.account,
           value: `${Number(this.mint.priceGWei)}`,
         });
 
-        console.log(txHash);
-
-        this.isMint = false;
+        console.log('Minted Succesfully');
       } catch (err: any) {
-        console.log(this.web3.utils.hexToAscii(err.data).trim());
+        this.isMint = false;
+        this.error = true;
+        this.cd.detectChanges();
+
+        console.error(this.web3.utils.hexToAscii(err.data).trim());
       }
     } else {
       this.sharedService.connect();
@@ -237,7 +257,15 @@ export class MintComponent implements OnInit {
   async getMintDetails() {
     try {
       this.isLoading = true;
+
       this.mint = await this.contract.methods.mint().call();
+
+      this.mint.time = {
+        ...this.mint.time,
+        start: this.mint.time.start + BigInt(60),
+        publicSale: this.mint.time.publicSale + BigInt(60),
+        end: this.mint.time.end + BigInt(60),
+      };
       const totalSupply = Number(
         await this.contract.methods.totalSupply().call()
       );
@@ -248,6 +276,8 @@ export class MintComponent implements OnInit {
       this.isLoading = false;
     } catch (err) {
       console.error(err);
+      this.isLoading = false;
+      this.error = true;
     }
   }
 }

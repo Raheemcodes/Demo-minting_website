@@ -5,8 +5,8 @@ export interface NFT {
   image: string;
   attributes: { trait_type: string; value: string }[];
   navigation: {
-    next: string;
-    prev: string;
+    next: string | null;
+    prev: string | null;
   };
   owner?: string;
 }
