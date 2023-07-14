@@ -1,4 +1,4 @@
-<main id="gallery" *ngIf="account">
+<main id="gallery">
   <section class="bg-img">
     <div class="content">
       <div class="mint-time">
@@ -6,6 +6,7 @@
           <div class="time-item">
             <dt>Mint time</dt>
 
+            <!-- main element -->
             <dd *ngIf="!isLoading && !error">
               <span class="thick">
                 {{ getDate(mint.time.start) }}
@@ -14,7 +15,8 @@
               <span>[ {{ startTime }} ]</span>
             </dd>
 
-            <dd *ngIf="isLoading && !error">
+            <!-- skeleton -->
+            <dd *ngIf="isLoading">
               <span class="thick skeleton">
                 Thu Jul 24 3000
                 <span class="bold">12:35</span>
@@ -26,6 +28,7 @@
           <div class="time-item">
             <dt>Public sale</dt>
 
+            <!-- main element -->
             <dd *ngIf="!isLoading && !error">
               <span class="thick">
                 {{ getDate(mint.time.publicSale) }}
@@ -36,6 +39,7 @@
               <span>[ {{ publicsaleTime }} ]</span>
             </dd>
 
+            <!-- skeleton -->
             <dd *ngIf="isLoading && !error">
               <span class="thick skeleton">
                 Thu Jul 24 3000
@@ -48,6 +52,7 @@
           <div class="time-item">
             <dt>Mint Ends</dt>
 
+            <!-- main element -->
             <dd *ngIf="!isLoading && !error">
               <span class="thick">
                 {{ getDate(mint.time.end) }}
@@ -56,6 +61,7 @@
               <span>[ {{ endTime }} ]</span>
             </dd>
 
+            <!-- skeleton -->
             <dd *ngIf="isLoading && !error">
               <span class="thick skeleton">
                 Thu Jul 24 3000
@@ -93,7 +99,7 @@
     </div>
   </section>
 
-  <section class="main-content" *ngIf="account">
+  <section class="main-content">
     <section class="products-container" #ul>
       <ul
         class="products-list"
@@ -160,3 +166,5 @@
 
   <router-outlet></router-outlet>
 </main>
+
+<app-modal *ngIf="openModal" (onclose)="onModalClose()"></app-modal>

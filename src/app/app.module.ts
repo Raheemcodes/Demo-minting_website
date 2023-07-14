@@ -10,9 +10,10 @@ import { NftComponent } from './mint/nft/nft.component';
 import { ErrorSvgComponent } from './shared/error-svg/error-svg.component';
 
 import Web3 from 'web3';
+import { ModalComponent } from './modal/modal.component';
 
 @NgModule({
-  declarations: [AppComponent, MintComponent, HeaderComponent, NftComponent],
+  declarations: [AppComponent, MintComponent, HeaderComponent, NftComponent, ModalComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

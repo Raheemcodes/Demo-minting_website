@@ -22,8 +22,9 @@ import { Mint, NFT, Transfer } from './mint.model';
 export class MintComponent implements OnInit {
   _isLoading: boolean = false;
   error: boolean = false;
+  openModal: boolean = true;
+  isMinting: boolean = false;
 
-  isMint: boolean = false;
   contract = new this.web3.eth.Contract(AzukiTransAbi, environment.address);
   account!: string;
   mint!: Mint;
@@ -89,13 +90,15 @@ export class MintComponent implements OnInit {
     this.sharedService.account$.subscribe({
       next: (account) => {
         this.account = account;
-
-        if (this.isMint) this.safeMint();
       },
       error: (err) => {
         console.error(err);
       },
     });
+  }
+
+  onModalClose() {
+    this.openModal = false;
   }
 
   getDate(time: BigInt): string {
@@ -188,11 +191,13 @@ export class MintComponent implements OnInit {
 
       this.mintedSupply++;
       this.getNft(Number(transfer.tokenId), transfer.to);
+      console.log('subscribed success');
     });
 
     sub.on('error', (err) => {
       this.error = true;
       console.error(err);
+      console.log('subscribed error');
     });
   }
 
@@ -201,15 +206,13 @@ export class MintComponent implements OnInit {
 
     this.sharedService.fetchNFT(idx, owner).subscribe({
       next: (nft) => {
-        this.isMint = false;
-
         timer(3000).subscribe(() => {
           this.addNft(nft);
         });
       },
       error: (err: HttpErrorResponse) => {
         this.error = true;
-        this.isMint = false;
+
         console.error(err);
       },
       complete: () => {
@@ -225,9 +228,9 @@ export class MintComponent implements OnInit {
   }
 
   async safeMint() {
-    if (this.isLoading) return;
+    if (this.isMinting) return;
+    this.isMinting = true;
 
-    this.isMint = true;
     this.error = false;
 
     this.cd.detectChanges();
@@ -241,21 +244,21 @@ export class MintComponent implements OnInit {
           value: `${Number(this.mint.priceGWei)}`,
         });
 
+        this.isMinting = false;
         console.log('Minted Succesfully');
       } catch (err: any) {
-        this.isMint = false;
-        this.cd.detectChanges();
-
+        this.isMinting = false;
         console.error(this.web3.utils.hexToAscii(err.data).trim());
       }
     } else {
-      this.sharedService.connect();
+      this.openModal = true;
     }
   }
 
   async getMintDetails() {
     try {
       this.isLoading = true;
+      this.error = false;
 
       this.mint = await this.contract.methods.mint().call();
 
@@ -265,6 +268,7 @@ export class MintComponent implements OnInit {
         publicSale: this.mint.time.publicSale + BigInt(60),
         end: this.mint.time.end + BigInt(60),
       };
+
       const totalSupply = Number(
         await this.contract.methods.totalSupply().call()
       );
@@ -272,7 +276,9 @@ export class MintComponent implements OnInit {
 
       this.loopSupply(mintedSupply, totalSupply);
       this.updateTime();
+
       this.isLoading = false;
+      this.error = false;
     } catch (err) {
       console.error(err);
       this.isLoading = false;
