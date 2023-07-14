@@ -21,7 +21,16 @@
                 Thu Jul 24 3000
                 <span class="bold">12:35</span>
               </span>
-              <span class="skeleton">[ In 356854 days 1 hour 22 mins ]</span>
+              <span class="skeleton">[ In 00 days 00 hour 00 mins ]</span>
+            </dd>
+
+            <!-- placeholder -->
+            <dd *ngIf="!isLoading && error">
+              <span class="thick">
+                Sun Jan 00 0000
+                <span class="bold">00:00</span>
+              </span>
+              <span>[ In 000 days 0 hour 00 mins ]</span>
             </dd>
           </div>
 
@@ -40,12 +49,21 @@
             </dd>
 
             <!-- skeleton -->
-            <dd *ngIf="isLoading && !error">
+            <dd *ngIf="isLoading">
               <span class="thick skeleton">
                 Thu Jul 24 3000
                 <span class="bold">12:35</span>
               </span>
-              <span class="skeleton">[ In 356854 days 1 hour 22 mins ]</span>
+              <span class="skeleton">[ In 00 days 00 hour 00 mins ]</span>
+            </dd>
+
+            <!-- placeholder -->
+            <dd *ngIf="!isLoading && error">
+              <span class="thick">
+                Sun Jan 00 0000
+                <span class="bold">00:00</span>
+              </span>
+              <span>[ In 000 days 0 hour 00 mins ]</span>
             </dd>
           </div>
 
@@ -62,12 +80,21 @@
             </dd>
 
             <!-- skeleton -->
-            <dd *ngIf="isLoading && !error">
+            <dd *ngIf="isLoading">
               <span class="thick skeleton">
                 Thu Jul 24 3000
                 <span class="bold">12:35</span>
               </span>
-              <span class="skeleton">[ In 356854 days 1 hour 22 mins ]</span>
+              <span class="skeleton">[ In 00 days 00 hour 00 mins ]</span>
+            </dd>
+
+            <!-- placeholder -->
+            <dd *ngIf="!isLoading && error">
+              <span class="thick">
+                Sun Jan 00 0000
+                <span class="bold">00:00</span>
+              </span>
+              <span>[ In 000 days 0 hour 00 mins ]</span>
             </dd>
           </div>
         </dl>
@@ -113,6 +140,7 @@
           </div>
 
           <button
+            *ngIf="!isMinting"
             [ngClass]="{ 'mint-btn': true }"
             title="Mint now"
             (click)="safeMint()"
@@ -167,4 +195,7 @@
   <router-outlet></router-outlet>
 </main>
 
-<app-modal *ngIf="openModal" (onclose)="onModalClose()"></app-modal>
+<app-modal *ngIf="openModal" (onclose)="onModalClose()"> </app-modal>
+<app-error-msg *ngIf="errorMsg" (onclose)="onErrorClose()">{{
+  errorMsg
+}}</app-error-msg>

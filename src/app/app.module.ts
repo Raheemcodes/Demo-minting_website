@@ -11,9 +11,10 @@ import { ErrorSvgComponent } from './shared/error-svg/error-svg.component';
 
 import Web3 from 'web3';
 import { ModalComponent } from './modal/modal.component';
+import { ErrorMsgComponent } from './error-msg/error-msg.component';
 
 @NgModule({
-  declarations: [AppComponent, MintComponent, HeaderComponent, NftComponent, ModalComponent],
+  declarations: [AppComponent, MintComponent, HeaderComponent, NftComponent, ModalComponent, ErrorMsgComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

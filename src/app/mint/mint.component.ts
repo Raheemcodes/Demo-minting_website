@@ -23,7 +23,9 @@ export class MintComponent implements OnInit {
   _isLoading: boolean = false;
   error: boolean = false;
   openModal: boolean = true;
+  openErrorMsg = false;
   isMinting: boolean = false;
+  errorMsg: string = '';
 
   contract = new this.web3.eth.Contract(AzukiTransAbi, environment.address);
   account!: string;
@@ -65,10 +67,6 @@ export class MintComponent implements OnInit {
     this.onTransfer();
   }
 
-  trackBy(index: number, nft: NFT): number {
-    return index;
-  }
-
   generateNumArr(): number[] {
     let num: number;
 
@@ -99,6 +97,15 @@ export class MintComponent implements OnInit {
 
   onModalClose() {
     this.openModal = false;
+  }
+
+  setErrorMsg(err: any) {
+    this.errorMsg = this.sharedService.handleError(err);
+    this.openErrorMsg = true;
+  }
+
+  onErrorClose() {
+    this.openErrorMsg = false;
   }
 
   getDate(time: BigInt): string {
@@ -159,11 +166,13 @@ export class MintComponent implements OnInit {
   }
 
   loopSupply(mintedSupply: number, totalSupply: number) {
-    this.sub[0] = this.loopTo(mintedSupply, 0).subscribe((val: number) => {
-      this.mintedSupply = val;
-    });
+    timer(3000).subscribe(() => {
+      this.sub[0] = this.loopTo(mintedSupply, 0).subscribe((val: number) => {
+        this.mintedSupply = val;
+      });
 
-    this.totalSupply = totalSupply;
+      this.totalSupply = totalSupply;
+    });
   }
 
   loopTo(to: number, idx: number): Observable<number> {
@@ -191,13 +200,12 @@ export class MintComponent implements OnInit {
 
       this.mintedSupply++;
       this.getNft(Number(transfer.tokenId), transfer.to);
-      console.log('subscribed success');
     });
 
-    sub.on('error', (err) => {
-      this.error = true;
+    sub.on('error', (err: any) => {
+      this.setErrorMsg(err);
+
       console.error(err);
-      console.log('subscribed error');
     });
   }
 
@@ -230,7 +238,6 @@ export class MintComponent implements OnInit {
   async safeMint() {
     if (this.isMinting) return;
     this.isMinting = true;
-
     this.error = false;
 
     this.cd.detectChanges();
@@ -247,11 +254,17 @@ export class MintComponent implements OnInit {
         this.isMinting = false;
         console.log('Minted Succesfully');
       } catch (err: any) {
+        const { data, message } = err;
         this.isMinting = false;
-        console.error(this.web3.utils.hexToAscii(err.data).trim());
+
+        this.setErrorMsg(err);
+
+        if (message) console.error(err.message);
+        if (data) console.error(this.web3.utils.hexToAscii(err.data).trim());
       }
     } else {
       this.openModal = true;
+      this.isMinting = false;
     }
   }
 
@@ -280,9 +293,11 @@ export class MintComponent implements OnInit {
       this.isLoading = false;
       this.error = false;
     } catch (err) {
-      console.error(err);
       this.isLoading = false;
       this.error = true;
+      this.setErrorMsg(err);
+
+      console.error(err);
     }
   }
 }

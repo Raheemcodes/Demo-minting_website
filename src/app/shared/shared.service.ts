@@ -94,5 +94,36 @@ export class SharedService implements OnInit {
       );
   }
 
-  fetchAllNFT() {}
+  handleError({
+    message,
+    reason,
+    data,
+  }: {
+    message: string;
+    reason: string;
+    data: string;
+  }): string {
+    let msg: string = 'An error occured!';
+    let error: string = '';
+
+    if (message) error = message;
+    else if (reason) error = reason;
+    else if (data) error = this.web3.utils.hexToAscii(data).trim();
+
+    const possibilities = [
+      'publicsale must be > zero',
+      'presale must be > zero',
+      'mint start time must be > current time',
+      'mint price must be > zero',
+      'total supply must be > zero',
+      'Failed to fetch',
+      'User denied transaction signature',
+    ];
+
+    msg =
+      possibilities.find((val) => error.includes(val)) ||
+      'An unknown error occured!';
+
+    return msg;
+  }
 }
