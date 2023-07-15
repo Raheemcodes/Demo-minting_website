@@ -140,7 +140,6 @@
           </div>
 
           <button
-            *ngIf="!isMinting"
             [ngClass]="{ 'mint-btn': true }"
             title="Mint now"
             (click)="safeMint()"

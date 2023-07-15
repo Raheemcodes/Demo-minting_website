@@ -24,7 +24,7 @@ export class MintComponent implements OnInit {
   error: boolean = false;
   openModal: boolean = true;
   openErrorMsg = false;
-  isMinting: boolean = false;
+
   errorMsg: string = '';
 
   contract = new this.web3.eth.Contract(AzukiDemoAbi, environment.address);
@@ -236,8 +236,6 @@ export class MintComponent implements OnInit {
   }
 
   async safeMint() {
-    if (this.isMinting) return;
-    this.isMinting = true;
     this.error = false;
 
     this.cd.detectChanges();
@@ -251,16 +249,12 @@ export class MintComponent implements OnInit {
           value: `${Number(this.mint.priceGWei)}`,
         });
 
-        this.isMinting = false;
         console.log('Minted Succesfully');
       } catch (err: any) {
-        this.isMinting = false;
-
         this.setErrorMsg(err);
       }
     } else {
       this.openModal = true;
-      this.isMinting = false;
     }
   }
 
