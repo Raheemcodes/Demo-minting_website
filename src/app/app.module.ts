@@ -14,7 +14,14 @@ import { ModalComponent } from './modal/modal.component';
 import { ErrorMsgComponent } from './error-msg/error-msg.component';
 
 @NgModule({
-  declarations: [AppComponent, MintComponent, HeaderComponent, NftComponent, ModalComponent, ErrorMsgComponent],
+  declarations: [
+    AppComponent,
+    MintComponent,
+    HeaderComponent,
+    NftComponent,
+    ModalComponent,
+    ErrorMsgComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
