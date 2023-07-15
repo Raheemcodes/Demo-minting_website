@@ -32,7 +32,10 @@ import { ErrorMsgComponent } from './error-msg/error-msg.component';
     { provide: 'Window', useValue: window },
     {
       provide: 'Web3',
-      useValue: new Web3((<any>window).ethereum),
+      useFactory: () => {
+        if ('ethereum' in window) return new Web3((<any>window).ethereum);
+        else return null;
+      },
     },
   ],
 
