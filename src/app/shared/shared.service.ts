@@ -115,6 +115,7 @@ export class SharedService implements OnInit {
       "You've minted!",
       'All token have been minted',
       'Invalid amount',
+      'missing role',
       'Failed to fetch',
       'User denied transaction signature',
     ];

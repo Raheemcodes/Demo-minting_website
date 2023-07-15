@@ -3,15 +3,15 @@ import {
   ChangeDetectorRef,
   Component,
   Inject,
-  OnInit,
   NgZone,
+  OnInit,
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, Subscription, interval, map, timer } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 import Web3 from 'web3';
 import { SharedService } from '../shared/shared.service';
-import AzukiTransAbi from './AzukiTransAbi';
+import AzukiDemoAbi from './AzukiDemoAbi';
 import { Mint, NFT, Transfer } from './mint.model';
 
 @Component({
@@ -27,7 +27,7 @@ export class MintComponent implements OnInit {
   isMinting: boolean = false;
   errorMsg: string = '';
 
-  contract = new this.web3.eth.Contract(AzukiTransAbi, environment.address);
+  contract = new this.web3.eth.Contract(AzukiDemoAbi, environment.address);
   account!: string;
   mint!: Mint;
   startTime!: string;
@@ -102,8 +102,8 @@ export class MintComponent implements OnInit {
   }
 
   setErrorMsg(err: any) {
-    this.errorMsg = this.sharedService.handleError(err);
     this.openErrorMsg = true;
+    this.errorMsg = this.sharedService.handleError(err);
   }
 
   onErrorClose() {
@@ -254,13 +254,9 @@ export class MintComponent implements OnInit {
         this.isMinting = false;
         console.log('Minted Succesfully');
       } catch (err: any) {
-        const { data, message } = err;
         this.isMinting = false;
 
         this.setErrorMsg(err);
-
-        // if (message) console.error(message);
-        // if (data) console.error(this.web3.utils.hexToAscii(data).trim());
       }
     } else {
       this.openModal = true;
@@ -277,9 +273,9 @@ export class MintComponent implements OnInit {
 
       this.mint.time = {
         ...this.mint.time,
-        start: this.mint.time.start + BigInt(60),
-        publicSale: this.mint.time.publicSale + BigInt(60),
-        end: this.mint.time.end + BigInt(60),
+        start: this.mint.time.start,
+        publicSale: this.mint.time.publicSale,
+        end: this.mint.time.end,
       };
 
       const totalSupply = Number(
