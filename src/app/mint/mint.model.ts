@@ -1,4 +1,4 @@
-import { AzukiTrans } from '../../../../hardhat/typechain-types/contracts/AzukiTrans';
+import { AzukiDemo } from './../../../../hardhat/typechain-types/contracts/AzukiDemo';
 
 export interface NFT {
   name: string;
@@ -13,7 +13,7 @@ export interface NFT {
 
 export interface Mint {
   priceGWei: bigint;
-  time: AzukiTrans.MintTimeStructOutput;
+  time: AzukiDemo.MintTimeStructOutput;
   total: bigint;
 }
 
