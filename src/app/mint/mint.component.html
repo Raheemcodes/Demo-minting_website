@@ -149,25 +149,23 @@
           </button>
         </li>
 
-        <ng-container>
-          <li
-            class="products"
-            *ngFor="let nft of nfts"
-            (click)="navigate(nft.name)"
-            [title]="nft.name"
-          >
-            <div class="img-cover">
-              <img
-                loading="lazy"
-                width="444"
-                height="444"
-                [src]="nft.image"
-                alt
-              />
-            </div>
-            <h2 class="god-name">{{ nft.name }}</h2>
-          </li>
-        </ng-container>
+        <li
+          class="products"
+          *ngFor="let nft of nfts"
+          (click)="navigate(nft.name)"
+          [title]="nft.name"
+        >
+          <div class="img-cover">
+            <img
+              loading="lazy"
+              width="444"
+              height="444"
+              [src]="nft.image"
+              alt
+            />
+          </div>
+          <h2 class="god-name">{{ nft.name }}</h2>
+        </li>
       </ul>
 
       <div class="error-container" *ngIf="error && nfts.length">

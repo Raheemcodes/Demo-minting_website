@@ -134,19 +134,13 @@ export class NftComponent implements OnInit, OnDestroy {
     const modifiedNft: NFT = {
       ...nft,
       owner:
-        nft.owner?.toLowerCase() == this.sharedService.account.toLowerCase()
+        nft.owner?.toLowerCase() == this.sharedService.account?.toLowerCase()
           ? 'you'
           : nft.owner!,
       navigation: { prev, next },
     };
 
     this.nft = modifiedNft;
-
-    // no NFT? fetch from database
-    // no NFT? fetch from database
-    // no NFT? fetch from database
-    // no NFT? fetch from database
-
     this.isLoading = false;
   }
 

@@ -101,21 +101,20 @@ export class SharedService implements OnInit {
   }: {
     message: string;
     reason: string;
-    data: string;
+    data: { message: string };
   }): string {
     let msg: string = 'An error occured!';
     let error: string = '';
 
-    if (message) error = message;
+    if (data) error = data.message;
+    else if (message) error = message;
     else if (reason) error = reason;
-    else if (data) error = this.web3.utils.hexToAscii(data).trim();
 
     const possibilities = [
-      'publicsale must be > zero',
-      'presale must be > zero',
-      'mint start time must be > current time',
-      'mint price must be > zero',
-      'total supply must be > zero',
+      'Mint has either ended or not started',
+      "You've minted!",
+      'All token have been minted',
+      'Invalid amount',
       'Failed to fetch',
       'User denied transaction signature',
     ];

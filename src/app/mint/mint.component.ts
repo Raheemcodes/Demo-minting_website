@@ -38,6 +38,7 @@ export class MintComponent implements OnInit {
   sub: Subscription[] = [];
   nfts: NFT[] = [];
   screenWidth: number = this.window.innerWidth;
+  DEFAULT_ADDRESS = '0x0000000000000000000000000000000000000000';
 
   constructor(
     private sharedService: SharedService,
@@ -64,10 +65,11 @@ export class MintComponent implements OnInit {
   ngOnInit(): void {
     this.getAccount();
     this.getMintDetails();
+    this.getPastMint();
     this.onTransfer();
   }
 
-  generateNumArr(): number[] {
+  genNumArr(): number[] {
     let num: number;
 
     if (this.screenWidth >= 1536) num = 5;
@@ -189,10 +191,8 @@ export class MintComponent implements OnInit {
   }
 
   onTransfer() {
-    const DEFAULT_ADDRESS = '0x0000000000000000000000000000000000000000';
-
     const sub = this.contract.events.Transfer({
-      filter: { from: DEFAULT_ADDRESS },
+      filter: { from: this.DEFAULT_ADDRESS },
     });
 
     sub.on('data', (event) => {
@@ -259,8 +259,8 @@ export class MintComponent implements OnInit {
 
         this.setErrorMsg(err);
 
-        if (message) console.error(err.message);
-        if (data) console.error(this.web3.utils.hexToAscii(err.data).trim());
+        // if (message) console.error(message);
+        // if (data) console.error(this.web3.utils.hexToAscii(data).trim());
       }
     } else {
       this.openModal = true;
@@ -297,6 +297,24 @@ export class MintComponent implements OnInit {
       this.error = true;
       this.setErrorMsg(err);
 
+      console.error(err);
+    }
+  }
+
+  async getPastMint() {
+    try {
+      const events = await this.contract.getPastEvents('Transfer', {
+        filter: { from: this.DEFAULT_ADDRESS },
+        fromBlock: 0,
+        toBlock: 'latest',
+      });
+
+      events.forEach((event) => {
+        const transfer: Transfer = (event as any).returnValues;
+
+        this.getNft(Number(transfer.tokenId), transfer.to);
+      });
+    } catch (err) {
       console.error(err);
     }
   }
