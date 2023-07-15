@@ -1,5 +1,3 @@
-import { AzukiDemo } from './../../../../hardhat/typechain-types/contracts/AzukiDemo';
-
 export interface NFT {
   name: string;
   image: string;
@@ -11,9 +9,15 @@ export interface NFT {
   owner?: string;
 }
 
+export type MintTimeStructOutput = [
+  start: bigint,
+  publicSale: bigint,
+  end: bigint
+] & { start: bigint; publicSale: bigint; end: bigint };
+
 export interface Mint {
   priceGWei: bigint;
-  time: AzukiDemo.MintTimeStructOutput;
+  time: MintTimeStructOutput;
   total: bigint;
 }
 
