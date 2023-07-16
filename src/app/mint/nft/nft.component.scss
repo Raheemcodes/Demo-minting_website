@@ -37,7 +37,6 @@
   gap: toRem(16);
   background-color: var(--gray-20);
   border-radius: toRem(8);
-  overflow: hidden;
   animation: slide-up 0.6s ease-out;
 
   @media screen and (min-width: $md) {
