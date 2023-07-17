@@ -12,6 +12,7 @@ export class SharedService implements OnInit {
   account$ = new Subject<string>();
   nfts: NFT[] = [];
   nfts$ = new Subject<NFT[]>();
+  noWallet$ = new Subject<string>();
 
   constructor(
     private http: HttpClient,
@@ -64,7 +65,7 @@ export class SharedService implements OnInit {
         this.account$.error(err);
       }
     } else {
-      this.account$.error(new Error('You do not have metamask wallet'));
+      this.noWallet$.next('You do not have metamask wallet');
     }
   }
 

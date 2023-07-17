@@ -66,6 +66,7 @@ export class MintComponent implements OnInit {
     this.getAccount();
     this.getMintDetails();
     this.getPastMint();
+    this.subToNoWallet$();
   }
 
   genNumArr(): number[] {
@@ -95,8 +96,14 @@ export class MintComponent implements OnInit {
         this.account = account;
       },
       error: (err) => {
-        this.setErrorMsg(err);
+        console.log(err);
       },
+    });
+  }
+
+  subToNoWallet$() {
+    this.sharedService.noWallet$.subscribe((msg) => {
+      this.setErrorMsg(new Error(msg));
     });
   }
 
