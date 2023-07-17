@@ -64,7 +64,7 @@ export class SharedService implements OnInit {
         this.account$.error(err);
       }
     } else {
-      this.account$.error(new Error('You do not have a metamask wallet'));
+      this.account$.error(new Error('You do not have metamask wallet'));
     }
   }
 
@@ -115,7 +115,7 @@ export class SharedService implements OnInit {
       'missing role',
       'Failed to fetch',
       'User denied transaction signature',
-      'You do not have a metamask wallet',
+      'You do not have metamask wallet',
     ];
 
     msg =
