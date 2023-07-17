@@ -99,6 +99,8 @@
     grid-template-columns: auto;
     grid-template-rows: auto;
     background-color: var(--gray-60);
+    border-top-left-radius: toRem(8);
+    border-top-right-radius: toRem(8);
 
     @media screen and (min-width: $xl) {
       position: static;
@@ -106,6 +108,7 @@
       width: 55%;
       border-top-left-radius: toRem(8);
       border-bottom-left-radius: toRem(8);
+      border-top-right-radius: 0;
     }
 
     canvas {

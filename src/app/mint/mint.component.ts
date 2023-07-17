@@ -26,7 +26,7 @@ export class MintComponent implements OnInit {
   openErrorMsg = false;
 
   errorMsg: string = '';
-
+  web3Provider = (<any>this.window).ethereum;
   contract = new this.web3.eth.Contract(AzukiDemoAbi, environment.address);
   account!: string;
   mint!: Mint;
@@ -66,7 +66,6 @@ export class MintComponent implements OnInit {
     this.getAccount();
     this.getMintDetails();
     this.getPastMint();
-    this.onTransfer();
   }
 
   genNumArr(): number[] {
@@ -89,10 +88,14 @@ export class MintComponent implements OnInit {
   getAccount() {
     this.sharedService.account$.subscribe({
       next: (account) => {
+        if (!this.account) {
+          this.contract.setProvider(this.web3Provider);
+          this.onTransfer();
+        }
         this.account = account;
       },
       error: (err) => {
-        console.error(err);
+        this.setErrorMsg(err);
       },
     });
   }

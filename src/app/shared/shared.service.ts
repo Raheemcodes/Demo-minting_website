@@ -44,9 +44,9 @@ export class SharedService implements OnInit {
   async connect() {
     if ('ethereum' in this.window) {
       try {
-        const response = await (
-          this.window.ethereum as Web3BaseProvider
-        ).request({
+        const web3Provider = <Web3BaseProvider>this.window.ethereum;
+
+        const response = await web3Provider.request({
           method: 'eth_requestAccounts',
         });
 
@@ -54,20 +54,17 @@ export class SharedService implements OnInit {
 
         this.setAccount(accounts[0]);
 
-        (<Web3BaseProvider>this.window.ethereum).on(
-          'accountsChanged',
-          (newAccounts) => {
-            this.setAccount(newAccounts[0]);
-            console.log('Updated Account:', newAccounts[0]);
-          }
-        );
+        web3Provider.on('accountsChanged', (newAccounts) => {
+          this.setAccount(newAccounts[0]);
+          console.log('Updated Account:', newAccounts[0]);
+        });
 
         console.log('Account connected:', accounts[0]);
       } catch (err) {
         this.account$.error(err);
       }
     } else {
-      console.error('MetaMask or Trust Wallet not available.');
+      this.account$.error(new Error('You do not have a metamask wallet'));
     }
   }
 
@@ -118,6 +115,7 @@ export class SharedService implements OnInit {
       'missing role',
       'Failed to fetch',
       'User denied transaction signature',
+      'You do not have a metamask wallet',
     ];
 
     msg =

@@ -41,9 +41,6 @@ export class HeaderComponent implements OnInit {
       next: (account) => {
         this.concatenateAccount(account);
       },
-      error: (err) => {
-        console.error(err);
-      },
     });
   }
 

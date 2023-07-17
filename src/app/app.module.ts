@@ -12,6 +12,7 @@ import { ErrorSvgComponent } from './shared/error-svg/error-svg.component';
 import Web3 from 'web3';
 import { ModalComponent } from './modal/modal.component';
 import { ErrorMsgComponent } from './error-msg/error-msg.component';
+import { environment } from 'src/environments/environment.development';
 
 @NgModule({
   declarations: [
@@ -32,10 +33,9 @@ import { ErrorMsgComponent } from './error-msg/error-msg.component';
     { provide: 'Window', useValue: window },
     {
       provide: 'Web3',
-      useFactory: () => {
-        if ('ethereum' in window) return new Web3((<any>window).ethereum);
-        else return null;
-      },
+      useValue: new Web3(
+        `https://sepolia.infura.io/v3/${environment.INFURA_API_KEY}`
+      ),
     },
   ],
 
