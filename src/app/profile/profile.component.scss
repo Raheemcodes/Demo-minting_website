@@ -1,0 +1,275 @@
+@import "../shared/shared";
+
+#marketplace {
+  width: 100%;
+  min-height: toRem(320);
+  height: 100%;
+  padding: toRem(80) 0 0;
+}
+
+.main-content {
+  width: 100%;
+  @include column-flex();
+  gap: toRem(32);
+  padding: toRem(24) toRem(16) toRem(48);
+
+  @media screen and (min-width: $md) {
+    gap: toRem(48);
+    padding: toRem(24) toRem(24) toRem(48);
+  }
+
+  @media screen and (min-width: $xl) {
+    gap: toRem(64);
+    padding: toRem(24) toRem(24) 0;
+  }
+  @media screen and (min-width: $two-xl) {
+    padding: toRem(24) toRem(32) 0;
+  }
+}
+
+h2.title {
+  font-size: 1.5rem;
+
+  @media screen and (min-width: $md) {
+    font-size: 2rem;
+  }
+  @media screen and (min-width: $xl) {
+    font-size: 2.5rem;
+  }
+}
+
+.products-container {
+  width: 100%;
+  padding-bottom: 3rem;
+
+  .products-list {
+    list-style: none;
+    width: 100%;
+    @include display-flex();
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: toRem(32) toRem(16);
+
+    @media screen and (min-width: $md) {
+      justify-content: space-between;
+      gap: toRem(77) toRem(24);
+    }
+    @media screen and (min-width: $two-xl) {
+      gap: toRem(90) toRem(32);
+    }
+
+    .products {
+      cursor: pointer;
+      min-width: toRem(163);
+      width: 48.5%;
+      width: calc(50% - toRem(8));
+      @include column-centered-start();
+      gap: toRem(16);
+
+      @media screen and (min-width: $md) {
+        width: 48%;
+        gap: toRem(24);
+        width: calc(50% - toRem(12));
+      }
+      @media screen and (min-width: $two-xl) {
+        width: 33.33%;
+        width: calc(33.33% - toRem(calc(22)));
+      }
+    }
+  }
+
+  @supports (display: grid) {
+    .products-list {
+      list-style: none;
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(toRem(163), 1fr));
+      gap: toRem(32) toRem(16);
+
+      @media screen and (min-width: $md) {
+        grid-template-columns: repeat(3, 1fr);
+        gap: toRem(77) toRem(24);
+      }
+      @media screen and (min-width: $xl) {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      @media screen and (min-width: $two-xl) {
+        grid-template-columns: repeat(5, 1fr);
+        gap: toRem(90) toRem(32);
+      }
+
+      .products {
+        cursor: pointer;
+        width: 100%;
+        @include column-centered-start();
+        gap: toRem(16);
+
+        @media screen and (min-width: $md) {
+          gap: toRem(24);
+        }
+      }
+    }
+  }
+
+  .img-cover {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1/1;
+    border-radius: toRem(4);
+    overflow: hidden;
+    background-color: var(--gray-60);
+
+    @media screen and (min-width: $md) {
+      border-radius: toRem(10);
+    }
+
+    &.null {
+      @include centered();
+      background-color: var(--gray-60);
+      position: relative;
+    }
+
+    .question_mark {
+      color: var(--gray-10);
+      font-size: 10rem;
+      font-weight: 300;
+    }
+
+    .line-left,
+    .line-right {
+      position: absolute;
+      background-color: #000;
+      width: 100% * 1.41421;
+      height: toRem(1);
+    }
+
+    .line-left {
+      transform: rotateZ(45deg);
+    }
+    .line-right {
+      transform: rotateZ(-45deg);
+    }
+
+    canvas {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      inset: 0;
+    }
+
+    img {
+      width: 100%;
+      height: auto;
+      background-color: inherit;
+    }
+  }
+
+  .btn-row {
+    @include between-centered();
+    width: 100%;
+  }
+
+  .god-name {
+    font-size: toRem(12);
+    font-weight: bold;
+    line-height: 1.17;
+    color: var(--gray-100);
+
+    @media screen and (min-width: $md) {
+      font-size: toRem(20);
+      font-weight: 500;
+      line-height: toRem(30);
+    }
+  }
+
+  .mint-btn {
+    font-family: "Satoshi";
+    font-weight: 700;
+    font-size: toRem(14);
+    padding: toRem(8) toRem(12);
+    color: var(--gray-10);
+    background-color: var(--gray-100);
+    border-radius: toRem(4);
+    transition: background-color 0.3s ease-out;
+
+    @media (min-width: $two-xl) {
+      font-size: toRem(16);
+      border-radius: toRem(8);
+      padding: toRem(12) toRem(24);
+      gap: toRem(48);
+    }
+
+    @media (hover: hover) {
+      &:hover {
+        background-color: var(--gray-90);
+      }
+    }
+  }
+}
+
+.error-container {
+  width: 100%;
+  @include column-centered();
+  gap: toRem(12);
+
+  @media screen and (min-width: $two-xl) {
+    gap: 0;
+  }
+
+  &.outer {
+    padding: toRem(80) 0;
+    justify-content: flex-start;
+    // height: 100%;
+  }
+
+  app-error-svg {
+    width: 100%;
+    max-width: toRem(667);
+
+    @media screen and (min-width: $two-xl) {
+      max-width: toRem(768);
+    }
+
+    svg {
+      width: 100%;
+      height: auto;
+    }
+  }
+}
+
+.error-msg {
+  h2 {
+    font-size: toRem(42);
+    font-weight: bold;
+    line-height: 0.9;
+    color: var(--main-red);
+    text-align: center;
+    margin-bottom: toRem(40);
+
+    @media screen and (min-width: $md) {
+      font-size: toRem(72);
+      line-height: 1.39;
+      margin-bottom: toRem(28);
+    }
+    @media screen and (min-width: $two-xl) {
+      font-size: toRem(84);
+      line-height: 1.19;
+    }
+  }
+
+  p {
+    font-size: toRem(16);
+    font-weight: 500;
+    line-height: 1.5;
+    text-align: center;
+    color: var(--gray-80);
+
+    @media screen and (min-width: $md) {
+      font-size: toRem(24);
+    }
+  }
+}
+
+.normal-cursor {
+  cursor: default !important;
+}
