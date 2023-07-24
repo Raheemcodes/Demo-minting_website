@@ -176,7 +176,7 @@
     color: var(--gray-10);
     background-color: var(--gray-100);
     border-radius: toRem(4);
-    transition: all 0.3s ease-out;
+    transition: background-color 0.3s ease-out;
 
     @media (min-width: $two-xl) {
       font-size: toRem(16);

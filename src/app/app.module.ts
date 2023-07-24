@@ -14,6 +14,7 @@ import { ModalComponent } from './modal/modal.component';
 import { ErrorMsgComponent } from './error-msg/error-msg.component';
 import { environment } from 'src/environments/environment.development';
 import { MarketplaceComponent } from './marketplace/marketplace.component';
+import { ProfileComponent } from './profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { MarketplaceComponent } from './marketplace/marketplace.component';
     ModalComponent,
     ErrorMsgComponent,
     MarketplaceComponent,
+    ProfileComponent,
   ],
   imports: [
     BrowserModule,
