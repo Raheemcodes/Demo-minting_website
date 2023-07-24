@@ -1,0 +1,74 @@
+<main id="marketplace">
+  <section class="main-content">
+    <section class="products-container" #ul>
+      <!-- <ul
+        class="products-list"
+        [attr.style]="isLoading ? 'overflow: hidden' : ''"
+      >
+        <li
+          class="products"
+          *ngFor="let nft of nfts"
+          (click)="navigate(nft.name)"
+          [title]="nft.name"
+        >
+          <div class="img-cover">
+            <img
+              loading="lazy"
+              width="444"
+              height="444"
+              [src]="nft.image"
+              alt
+            />
+          </div>
+          <h2 class="god-name">{{ nft.name }}</h2>
+        </li>
+      </ul> -->
+      <ul class="products-list">
+        <li class="products" *ngFor="let nft of [1, 2, 3, 4, 5, 6]">
+          <div class="img-cover">
+            <img loading="lazy" width="444" height="444" alt />
+          </div>
+
+          <div class="btn-row">
+            <h2 class="god-name">Azuki #45</h2>
+            <button
+              class="mint-btn"
+              type="button"
+              aria-label="Buy button"
+              title="Buy now"
+            >
+              Buy
+            </button>
+          </div>
+        </li>
+      </ul>
+
+      <!-- <div class="error-container" *ngIf="error && nfts.length">
+        <app-error-svg></app-error-svg>
+
+        <div class="error-msg">
+          <h2>Request Failed</h2>
+
+          <p>Please check your network and try again</p>
+        </div>
+      </div> -->
+    </section>
+  </section>
+
+  <!-- <div class="error-container outer" *ngIf="error && !nfts.length">
+    <app-error-svg></app-error-svg>
+
+    <div class="error-msg">
+      <h2>Request Failed</h2>
+
+      <p>Please check your network and try again</p>
+    </div>
+  </div> -->
+
+  <router-outlet></router-outlet>
+</main>
+
+<!-- <app-modal *ngIf="openModal" (onclose)="onModalClose()"> </app-modal>
+<app-error-msg *ngIf="openErrorMsg" (onclose)="onErrorClose()">{{
+  errorMsg
+}}</app-error-msg> -->

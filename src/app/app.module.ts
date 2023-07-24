@@ -13,6 +13,7 @@ import Web3 from 'web3';
 import { ModalComponent } from './modal/modal.component';
 import { ErrorMsgComponent } from './error-msg/error-msg.component';
 import { environment } from 'src/environments/environment.development';
+import { MarketplaceComponent } from './marketplace/marketplace.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { environment } from 'src/environments/environment.development';
     NftComponent,
     ModalComponent,
     ErrorMsgComponent,
+    MarketplaceComponent,
   ],
   imports: [
     BrowserModule,
@@ -33,9 +35,7 @@ import { environment } from 'src/environments/environment.development';
     { provide: 'Window', useValue: window },
     {
       provide: 'Web3',
-      useValue: new Web3(
-        `https://sepolia.infura.io/v3/${environment.INFURA_API_KEY}`
-      ),
+      useValue: new Web3(environment.provider),
     },
   ],
 
