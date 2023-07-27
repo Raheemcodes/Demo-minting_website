@@ -1,8 +1,9 @@
-import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable, OnInit } from '@angular/core';
-import { Observable, Subject, map } from 'rxjs';
+import { Subject } from 'rxjs';
 import Web3, { Web3BaseProvider } from 'web3';
 import { NFT } from '../mint/mint.model';
+import { Router, UrlTree } from '@angular/router';
+import { ModalService } from '../modal/modal.service';
 
 @Injectable({
   providedIn: 'root',
@@ -15,12 +16,18 @@ export class SharedService implements OnInit {
   noWallet$ = new Subject<string>();
 
   constructor(
-    private http: HttpClient,
+    private router: Router,
+    private modalService: ModalService,
     @Inject('Web3') private web3: Web3,
     @Inject('Window') private window: Window
   ) {}
 
   ngOnInit(): void {}
+
+  canActivate(): true | UrlTree {
+    if (!this.account) this.modalService.openModal$.next(true);
+    return !!this.account || this.router.createUrlTree(['/']);
+  }
 
   setAccount(account: string) {
     this.account = account;
@@ -73,23 +80,19 @@ export class SharedService implements OnInit {
     return name.split('#')[1];
   }
 
-  fetchNFT(idx: number, owner: string): Observable<NFT> {
-    return this.http
-      .get<NFT>(
-        `https://ipfs.io/ipfs/QmZcH4YvBVVRJtdn4RdbaqgspFU8gH6P9vomDpBVpAL3u4/${idx}`
-      )
-      .pipe(
-        map((nft) => {
-          const mappedNft: NFT = {
-            ...nft,
-            image: nft.image.replace('ipfs://', 'https://ipfs.io/ipfs/'),
-            owner,
-          };
+  restructureNFTImage({ msg, nfts }: { msg: string; nfts: NFT[] }): {
+    msg: string;
+    nfts: NFT[];
+  } {
+    const mappedNFTs: NFT[] = nfts.map((nft) => {
+      const restructuredNFT: NFT = {
+        ...nft,
+        image: nft.image.replace('ipfs://', 'https://ipfs.io/ipfs/'),
+      };
+      return restructuredNFT;
+    });
 
-          this.setNft(mappedNft);
-          return mappedNft;
-        })
-      );
+    return { msg, nfts: mappedNFTs };
   }
 
   handleError({

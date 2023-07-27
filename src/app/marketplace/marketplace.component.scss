@@ -150,6 +150,11 @@
     }
   }
 
+  .product-content {
+    @include column-centered();
+    width: 100%;
+  }
+
   .btn-row {
     @include between-centered();
     width: 100%;
@@ -165,6 +170,10 @@
       font-size: toRem(20);
       font-weight: 500;
       line-height: toRem(30);
+    }
+
+    &.skeleton {
+      border-radius: toRem(4);
     }
   }
 
@@ -189,6 +198,10 @@
       &:hover {
         background-color: var(--gray-90);
       }
+    }
+
+    &.skeleton {
+      border-radius: toRem(4);
     }
   }
 }

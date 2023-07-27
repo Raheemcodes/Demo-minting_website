@@ -6,6 +6,7 @@ export interface NFT {
     next: string | null;
     prev: string | null;
   };
+  price?: number;
   owner?: string;
 }
 

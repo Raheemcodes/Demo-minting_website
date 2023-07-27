@@ -1,44 +1,60 @@
 <main id="marketplace">
   <section class="main-content">
-    <section class="products-container" #ul>
-      <!-- <ul
-        class="products-list"
-        [attr.style]="isLoading ? 'overflow: hidden' : ''"
-      >
-        <li
-          class="products"
-          *ngFor="let nft of nfts"
-          (click)="navigate(nft.name)"
-          [title]="nft.name"
-        >
+    <section class="products-container">
+      <ul class="products-list" *ngIf="!isLoading && nfts?.length">
+        <li class="products" *ngFor="let nft of nfts">
           <div class="img-cover">
             <img
               loading="lazy"
+              [src]="nft.image"
               width="444"
               height="444"
-              [src]="nft.image"
               alt
             />
           </div>
-          <h2 class="god-name">{{ nft.name }}</h2>
-        </li>
-      </ul> -->
-      <ul class="products-list">
-        <li class="products" *ngFor="let nft of [1, 2, 3, 4, 5, 6]">
-          <div class="img-cover">
-            <img loading="lazy" width="444" height="444" alt />
-          </div>
 
-          <div class="btn-row">
-            <h2 class="god-name">Azuki #45</h2>
-            <button
-              class="mint-btn"
-              type="button"
-              aria-label="Buy button"
-              title="Buy now"
-            >
-              Buy
-            </button>
+          <div class="product-content">
+            <h2 class="god-name" *ngIf="nft.price">ETH {{ nft.price }}</h2>
+
+            <div class="btn-row">
+              <h2 class="god-name">{{ nft.name }}</h2>
+
+              <button
+                class="mint-btn"
+                type="button"
+                aria-label="Buy button"
+                title="Buy now"
+              >
+                Buy
+              </button>
+            </div>
+          </div>
+        </li>
+      </ul>
+
+      <ul
+        *ngIf="isLoading"
+        class="products-list"
+        [attr.style]="isLoading ? 'overflow: hidden' : ''"
+      >
+        <li class="products" *ngFor="let nft of genNumArr(20)">
+          <div class="img-cover skeleton"></div>
+
+          <div class="product-content">
+            <h2 class="god-name skeleton">ETH 0.001</h2>
+
+            <div class="btn-row">
+              <h2 class="god-name skeleton">Azuki #45</h2>
+
+              <button
+                class="mint-btn skeleton"
+                type="button"
+                aria-label="Buy button"
+                title="Buy now"
+              >
+                Buy
+              </button>
+            </div>
           </div>
         </li>
       </ul>

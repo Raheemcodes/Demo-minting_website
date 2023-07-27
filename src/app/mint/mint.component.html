@@ -192,7 +192,6 @@
   <router-outlet></router-outlet>
 </main>
 
-<app-modal *ngIf="openModal" (onclose)="onModalClose()"> </app-modal>
 <app-error-msg *ngIf="openErrorMsg" (onclose)="onErrorClose()">{{
   errorMsg
 }}</app-error-msg>

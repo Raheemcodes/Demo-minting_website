@@ -13,6 +13,8 @@ import Web3 from 'web3';
 import { SharedService } from '../shared/shared.service';
 import AzukiDemoAbi from './AzukiDemoAbi';
 import { Mint, NFT, Transfer } from './mint.model';
+import { DataService } from '../shared/data.service';
+import { ModalService } from '../modal/modal.service';
 
 @Component({
   selector: 'app-mint',
@@ -22,7 +24,7 @@ import { Mint, NFT, Transfer } from './mint.model';
 export class MintComponent implements OnInit {
   _isLoading: boolean = false;
   error: boolean = false;
-  openModal: boolean = true;
+
   openErrorMsg = false;
 
   errorMsg: string = '';
@@ -42,6 +44,8 @@ export class MintComponent implements OnInit {
 
   constructor(
     private sharedService: SharedService,
+    private modalService: ModalService,
+    private dataService: DataService,
     private router: Router,
     private cd: ChangeDetectorRef,
     private zone: NgZone,
@@ -105,10 +109,6 @@ export class MintComponent implements OnInit {
     this.sharedService.noWallet$.subscribe((msg) => {
       this.setErrorMsg(new Error(msg));
     });
-  }
-
-  onModalClose() {
-    this.openModal = false;
   }
 
   setErrorMsg(err: any) {
@@ -222,7 +222,7 @@ export class MintComponent implements OnInit {
   getNft(idx: number, owner: string) {
     this.error = false;
 
-    this.sharedService.fetchNFT(idx, owner).subscribe({
+    this.dataService.fetchNFT(idx, owner).subscribe({
       next: (nft) => {
         timer(3000).subscribe(() => {
           this.addNft(nft);
@@ -264,7 +264,7 @@ export class MintComponent implements OnInit {
         this.setErrorMsg(err);
       }
     } else {
-      this.openModal = true;
+      this.modalService.openModal$.next(true);
     }
   }
 
@@ -273,7 +273,7 @@ export class MintComponent implements OnInit {
       this.isLoading = true;
       this.error = false;
 
-      this.mint = await this.contract.methods.mint().call();
+      this.mint = await this.contract.methods.getMint().call();
 
       this.mint.time = {
         ...this.mint.time,
@@ -283,7 +283,7 @@ export class MintComponent implements OnInit {
       };
 
       const totalSupply = Number(
-        await this.contract.methods.totalSupply().call()
+        await this.contract.methods.getTotalSupply().call()
       );
       const mintedSupply = Number(this.mint.total);
 

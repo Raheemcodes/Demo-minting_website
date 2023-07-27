@@ -4,22 +4,15 @@
   width: 100%;
   min-height: toRem(320);
   height: 100%;
+
   padding: toRem(80) 0 0;
 }
 
 .main-content {
   width: 100%;
   @include column-flex();
-  gap: toRem(32);
-  padding: toRem(24) toRem(16) toRem(48);
-
-  @media screen and (min-width: $md) {
-    gap: toRem(48);
-    padding: toRem(24) toRem(24) toRem(48);
-  }
 
   @media screen and (min-width: $xl) {
-    gap: toRem(64);
     padding: toRem(24) toRem(24) 0;
   }
   @media screen and (min-width: $two-xl) {
@@ -29,8 +22,10 @@
 
 h2.title {
   font-size: 1.5rem;
+  margin-bottom: 2rem;
 
   @media screen and (min-width: $md) {
+    margin-bottom: 3rem;
     font-size: 2rem;
   }
   @media screen and (min-width: $xl) {
@@ -40,7 +35,11 @@ h2.title {
 
 .products-container {
   width: 100%;
-  padding-bottom: 3rem;
+  padding: toRem(24) toRem(16) toRem(48);
+
+  @media screen and (min-width: $md) {
+    padding: toRem(24) toRem(24) toRem(48);
+  }
 
   .products-list {
     list-style: none;
@@ -83,7 +82,7 @@ h2.title {
       list-style: none;
       width: 100%;
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(toRem(163), 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(toRem(163), 1fr));
       gap: toRem(32) toRem(16);
 
       @media screen and (min-width: $md) {
@@ -192,7 +191,7 @@ h2.title {
     border-radius: toRem(4);
     transition: background-color 0.3s ease-out;
 
-    @media (min-width: $two-xl) {
+    @media (min-width: $md) {
       font-size: toRem(16);
       border-radius: toRem(8);
       padding: toRem(12) toRem(24);
