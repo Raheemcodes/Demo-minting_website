@@ -1,38 +1,28 @@
-<main id="marketplace">
+<main id="marketplace" [attr.style]="isLoading ? 'overflow: hidden' : ''">
   <section class="main-content">
-    <section class="products-container" #ul>
+    <section class="products-container">
       <h2 class="title">Your Profile</h2>
-      <!-- <ul
-        class="products-list"
-        [attr.style]="isLoading ? 'overflow: hidden' : ''"
-      >
-        <li
-          class="products"
-          *ngFor="let nft of nfts"
-          (click)="navigate(nft.name)"
-          [title]="nft.name"
-        >
+
+      <div *ngIf="!isLoading && !account" class="warning">
+        Connect to view your tokens!
+      </div>
+
+      <ul class="products-list" *ngIf="!isLoading">
+        <li class="products" *ngFor="let nft of nfts">
           <div class="img-cover">
             <img
               loading="lazy"
+              [src]="nft.image"
               width="444"
               height="444"
-              [src]="nft.image"
               alt
             />
           </div>
-          <h2 class="god-name">{{ nft.name }}</h2>
-        </li>
-      </ul> -->
-      <ul class="products-list">
-        <li class="products" *ngFor="let nft of [1, 2, 3, 4, 5, 6]">
-          <div class="img-cover">
-            <img loading="lazy" width="444" height="444" alt />
-          </div>
 
           <div class="btn-row">
-            <h2 class="god-name">Azuki #45</h2>
+            <h2 class="god-name">{{ nft.name }}</h2>
             <button
+              *ngIf="!nft.price"
               class="mint-btn"
               type="button"
               aria-label="List button"
@@ -40,14 +30,33 @@
             >
               List
             </button>
-            <!-- <button
+            <button
+              *ngIf="nft.price"
               class="mint-btn"
               type="button"
               aria-label="Unlist button"
               title="Unlist now"
             >
               Unlist
-            </button> -->
+            </button>
+          </div>
+        </li>
+      </ul>
+
+      <ul class="products-list" *ngIf="isLoading">
+        <li class="products" *ngFor="let nft of genNumArr(20)">
+          <div class="img-cover skeleton"></div>
+
+          <div class="btn-row">
+            <h2 class="god-name skeleton">Azuki #00</h2>
+            <button
+              class="mint-btn skeleton"
+              type="button"
+              aria-label="List button"
+              title="List now"
+            >
+              List
+            </button>
           </div>
         </li>
       </ul>

@@ -6,39 +6,48 @@ import {
   OnDestroy,
   Renderer2,
   AfterViewInit,
+  Input,
   Output,
   EventEmitter,
 } from '@angular/core';
 import { SharedService } from '../shared/shared.service';
 import { Subscription, timer } from 'rxjs';
+import { ModalService } from './modal.service';
 
 @Component({
   selector: 'app-modal',
   templateUrl: './modal.component.html',
   styleUrls: ['./modal.component.scss'],
 })
-export class ModalComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ModalComponent implements OnInit, OnDestroy {
   @ViewChild('modal') modal!: ElementRef<HTMLElement>;
   sub: Subscription[] = [];
+  isOpened: boolean = false;
   @Output() onclose = new EventEmitter();
 
   constructor(
     private sharedService: SharedService,
+    private modalService: ModalService,
     private renderer: Renderer2
   ) {}
 
   ngOnInit(): void {
     this.closeModal();
+    this.subAutoClose();
 
     this.sharedService.account$.subscribe((account) => {
       if (account) this.close();
     });
   }
 
-  ngAfterViewInit(): void {}
-
   onclick() {
     this.sharedService.connect();
+  }
+
+  subAutoClose() {
+    this.modalService.disableAutoClose$.subscribe(() => {
+      this.isOpened = true;
+    });
   }
 
   close() {
@@ -57,7 +66,7 @@ export class ModalComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.sub[1]) this.sub[1].unsubscribe();
 
     this.sub[1] = timer(5000).subscribe(() => {
-      this.close();
+      if (!this.isOpened) this.close();
     });
   }
 

@@ -1,10 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { NftComponent } from './mint/nft/nft.component';
 import { MarketplaceComponent } from './marketplace/marketplace.component';
 import { MintComponent } from './mint/mint.component';
+import { NftComponent } from './mint/nft/nft.component';
 import { ProfileComponent } from './profile/profile.component';
-import { profileGuard } from './profile/profile.guard';
 
 const routes: Routes = [
   {
@@ -13,7 +12,7 @@ const routes: Routes = [
     children: [{ component: NftComponent, path: 'nft/:id' }],
   },
   { component: MarketplaceComponent, path: 'marketplace' },
-  { component: ProfileComponent, path: 'profile', canActivate: [profileGuard] },
+  { component: ProfileComponent, path: 'profile' },
   { path: '**', redirectTo: '/' },
 ];
 

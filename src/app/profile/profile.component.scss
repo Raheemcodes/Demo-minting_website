@@ -8,18 +8,6 @@
   padding: toRem(80) 0 0;
 }
 
-.main-content {
-  width: 100%;
-  @include column-flex();
-
-  @media screen and (min-width: $xl) {
-    padding: toRem(24) toRem(24) 0;
-  }
-  @media screen and (min-width: $two-xl) {
-    padding: toRem(24) toRem(32) 0;
-  }
-}
-
 h2.title {
   font-size: 1.5rem;
   margin-bottom: 2rem;
@@ -30,6 +18,31 @@ h2.title {
   }
   @media screen and (min-width: $xl) {
     font-size: 2.5rem;
+  }
+}
+
+.warning {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+
+  @media screen and (min-width: $md) {
+    margin-bottom: 3rem;
+    font-size: 1.7rem;
+  }
+  @media screen and (min-width: $xl) {
+    font-size: 2rem;
+  }
+}
+
+.main-content {
+  width: 100%;
+  @include display-flex();
+
+  @media screen and (min-width: $xl) {
+    padding: toRem(24) toRem(24) 0;
+  }
+  @media screen and (min-width: $two-xl) {
+    padding: toRem(24) toRem(32) 0;
   }
 }
 
@@ -82,7 +95,7 @@ h2.title {
       list-style: none;
       width: 100%;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(toRem(163), 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(toRem(163), 1fr));
       gap: toRem(32) toRem(16);
 
       @media screen and (min-width: $md) {
@@ -163,6 +176,11 @@ h2.title {
     }
   }
 
+  .product-content {
+    @include column-centered();
+    width: 100%;
+  }
+
   .btn-row {
     @include between-centered();
     width: 100%;
@@ -179,6 +197,10 @@ h2.title {
       font-weight: 500;
       line-height: toRem(30);
     }
+
+    &.skeleton {
+      border-radius: toRem(4);
+    }
   }
 
   .mint-btn {
@@ -191,7 +213,7 @@ h2.title {
     border-radius: toRem(4);
     transition: background-color 0.3s ease-out;
 
-    @media (min-width: $md) {
+    @media (min-width: $two-xl) {
       font-size: toRem(16);
       border-radius: toRem(8);
       padding: toRem(12) toRem(24);
@@ -202,6 +224,10 @@ h2.title {
       &:hover {
         background-color: var(--gray-90);
       }
+    }
+
+    &.skeleton {
+      border-radius: toRem(4);
     }
   }
 }

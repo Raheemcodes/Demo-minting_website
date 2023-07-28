@@ -1,5 +1,5 @@
 export const environment = {
-  address: '0x57a10f05B6D04D2B626020e6D24274567eE95E76',
+  address: '0xFC62d44765AcDB0Bd99234E784270C2D546FC95E',
   // marketplace: '0xe328CCD8Da9d5Fc7F07De949cf54EfCBE96378a3',
   API: 'http://localhost:5000',
   baseURI:

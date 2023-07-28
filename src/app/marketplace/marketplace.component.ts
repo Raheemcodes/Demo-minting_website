@@ -48,7 +48,6 @@ export class MarketplaceComponent implements OnInit {
 
     this.dataService.fetchNFts(0, 2).subscribe({
       next: ({ nfts }) => {
-        // console.log(res);
         this.nfts = nfts;
         this.isLoading = false;
       },

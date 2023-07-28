@@ -1,4 +1,4 @@
-<main id="marketplace">
+<main id="marketplace" [attr.style]="isLoading ? 'overflow: hidden' : ''">
   <section class="main-content">
     <section class="products-container">
       <ul class="products-list" *ngIf="!isLoading && nfts?.length">
