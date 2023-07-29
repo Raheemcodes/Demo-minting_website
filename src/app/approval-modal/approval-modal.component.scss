@@ -1,0 +1,129 @@
+@import "./../shared/shared";
+
+.backdrop {
+  @include centered();
+  position: fixed;
+  inset: 0;
+  z-index: 6;
+  width: 100%;
+  height: 100%;
+  animation: opaque 0.3s ease-out;
+  transition: opacity 0.3s ease-out;
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  background-color: rgba(25, 28, 31, 0.8);
+
+  &.closed {
+    opacity: 0;
+  }
+}
+
+.pop-up__cover {
+  @include centered();
+  flex-direction: column;
+  min-width: toRem(260);
+  width: 90%;
+  opacity: 1;
+  background-color: var(--gray-20);
+  gap: toRem(16);
+  padding: toRem(16);
+  border-radius: 8px;
+  animation: fade-in 500ms ease-in;
+  transition: all 300ms ease-out;
+
+  &.closed {
+    transform: translateY(-20%);
+  }
+
+  @media screen and (min-width: $md) {
+    max-width: toRem(788);
+    aspect-ratio: auto;
+    flex-direction: row;
+    gap: toRem(64);
+    padding: toRem(24);
+  }
+
+  .content {
+    @include display-flex();
+    flex-direction: column;
+    gap: 0.5rem;
+
+    @media screen and (min-width: $lg) {
+      gap: 1rem;
+    }
+  }
+
+  .title {
+    font-size: toRem(18);
+    font-weight: bold;
+    line-height: 1.17;
+    color: var(--gray-gray-100);
+    margin-bottom: toRem(8);
+
+    @media screen and (min-width: $lg) {
+      font-size: toRem(24);
+    }
+  }
+
+  .sub-title {
+    font-size: toRem(14);
+    font-weight: normal;
+    line-height: 1.5;
+    color: var(--gray-80);
+
+    @media screen and (min-width: $lg) {
+      font-size: toRem(16);
+    }
+  }
+
+  button {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: toRem(8);
+    padding: toRem(12) toRem(24);
+    border-radius: toRem(8);
+    background-color: var(--red-40-main);
+    font-size: toRem(16);
+    font-weight: bold;
+    line-height: 1.5;
+    color: var(--gray-100);
+
+    &.cta {
+      color: var(--gray-10);
+      background-color: var(--gray-100);
+      transition: all 0.3s ease-out;
+
+      @media (hover: hover) {
+        &:hover {
+          background-color: var(--gray-90);
+        }
+      }
+    }
+
+    @media screen and (min-width: $md) {
+      width: auto;
+      padding: torem(16) toRem(32);
+    }
+  }
+}
+
+@keyframes fade-in {
+  from {
+    transform: translateY(-20%);
+  }
+  to {
+    transform: translateY(0%);
+  }
+}
+
+@keyframes opaque {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

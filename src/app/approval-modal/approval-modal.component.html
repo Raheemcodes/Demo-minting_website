@@ -1,0 +1,23 @@
+<div class="backdrop" #backdrop (click)="onclickBackdrop($event)">
+  <div class="pop-up__cover" #modal>
+    <div class="content">
+      <h2 class="title">{{ isApproved ? "Approved :)" : "Not Approved!" }}</h2>
+      <p class="sub-title">
+        {{
+          isApproved
+            ? "Site has been approved to transfer tokens on your behalf"
+            : "Approve this site to transfer tokens on your behalf"
+        }}
+      </p>
+    </div>
+
+    <button
+      class="cta"
+      title="Connect"
+      aria-label="Connect Wallet Button"
+      (click)="isApproved ? '' : onclick()"
+    >
+      {{ isApproved ? "Approved :)" : "Approve" }}
+    </button>
+  </div>
+</div>
