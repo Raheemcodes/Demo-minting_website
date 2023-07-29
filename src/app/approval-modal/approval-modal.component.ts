@@ -54,7 +54,7 @@ export class ApprovalModalComponent implements OnInit, OnDestroy {
 
   async onclick() {
     try {
-      await this.nftContract.methods
+      const tx = await this.nftContract.methods
         .setApprovalForAll(environment.marketplace, true)
         .send({ from: this.account });
     } catch (err) {
@@ -74,7 +74,7 @@ export class ApprovalModalComponent implements OnInit, OnDestroy {
     this.renderer.addClass(this.modal.nativeElement, 'closed');
     this.renderer.addClass(this.backdrop.nativeElement, 'closed');
 
-    this.sub = timer(500).subscribe(() => {
+    this.sub = timer(300).subscribe(() => {
       this.onapproved.emit();
     });
   }

@@ -1,7 +1,11 @@
 <main id="marketplace" [attr.style]="isLoading ? 'overflow: hidden' : ''">
   <section class="main-content">
     <section class="products-container">
-      <ul class="products-list" *ngIf="!isLoading && nfts?.length">
+      <div *ngIf="!nfts?.length && !isLoading && !error" class="no-product">
+        No product has been minted!
+      </div>
+
+      <ul class="products-list" *ngIf="!isLoading && !error">
         <li class="products" *ngFor="let nft of nfts">
           <div class="img-cover">
             <img
@@ -20,6 +24,7 @@
               <h2 class="god-name">{{ nft.name }}</h2>
 
               <button
+                *ngIf="nft.price"
                 class="mint-btn"
                 type="button"
                 aria-label="Buy button"
@@ -33,7 +38,7 @@
       </ul>
 
       <ul
-        *ngIf="isLoading"
+        *ngIf="isLoading && !error"
         class="products-list"
         [attr.style]="isLoading ? 'overflow: hidden' : ''"
       >
@@ -59,7 +64,7 @@
         </li>
       </ul>
 
-      <!-- <div class="error-container" *ngIf="error && nfts.length">
+      <div class="error-container" *ngIf="error">
         <app-error-svg></app-error-svg>
 
         <div class="error-msg">
@@ -67,7 +72,7 @@
 
           <p>Please check your network and try again</p>
         </div>
-      </div> -->
+      </div>
     </section>
   </section>
 

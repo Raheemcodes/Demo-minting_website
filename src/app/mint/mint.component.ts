@@ -24,7 +24,6 @@ import { ModalService } from '../modal/modal.service';
 export class MintComponent implements OnInit {
   _isLoading: boolean = false;
   error: boolean = false;
-
   openErrorMsg = false;
 
   errorMsg: string = '';
@@ -91,6 +90,8 @@ export class MintComponent implements OnInit {
   }
 
   getAccount() {
+    this.account = this.sharedService.account;
+
     this.sharedService.account$.subscribe({
       next: (account) => {
         if (!this.account) {

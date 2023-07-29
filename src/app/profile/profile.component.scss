@@ -22,6 +22,10 @@ h2.title {
 }
 
 .warning {
+  @include display-flex();
+  align-items: end;
+  flex-wrap: wrap;
+  gap: toRem(24);
   font-size: 1.2rem;
   margin-bottom: 2rem;
 
@@ -31,6 +35,37 @@ h2.title {
   }
   @media screen and (min-width: $xl) {
     font-size: 2rem;
+  }
+
+  button {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: toRem(8);
+    padding: toRem(12) toRem(24);
+    border-radius: toRem(8);
+    background-color: var(--red-40-main);
+    font-size: toRem(16);
+    font-weight: bold;
+    line-height: 1.5;
+    color: var(--gray-100);
+
+    &.cta {
+      color: var(--gray-10);
+      background-color: var(--gray-100);
+      transition: all 0.3s ease-out;
+
+      @media (hover: hover) {
+        &:hover {
+          background-color: var(--gray-90);
+        }
+      }
+    }
+
+    @media screen and (min-width: $md) {
+      padding: torem(16) toRem(32);
+    }
   }
 }
 

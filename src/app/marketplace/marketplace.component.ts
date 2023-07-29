@@ -12,6 +12,8 @@ import { SharedService } from '../shared/shared.service';
 })
 export class MarketplaceComponent implements OnInit {
   _isLoading: boolean = false;
+  error: boolean = false;
+
   web3Provider = (<any>this.window).ethereum;
   nfts!: NFT[];
 
@@ -45,13 +47,17 @@ export class MarketplaceComponent implements OnInit {
 
   fetchNFTs() {
     this.isLoading = true;
+    this.error = false;
 
     this.dataService.fetchNFts(0, 2).subscribe({
       next: ({ nfts }) => {
         this.nfts = nfts;
         this.isLoading = false;
       },
-      error: (err) => {},
+      error: (err) => {
+        this.error = true;
+        console.error(err);
+      },
     });
   }
 }

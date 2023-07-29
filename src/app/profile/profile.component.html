@@ -3,11 +3,26 @@
     <section class="products-container">
       <h2 class="title">Your Profile</h2>
 
-      <div *ngIf="!isLoading && !account" class="warning">
-        Connect to view your tokens!
+      <div
+        *ngIf="nfts && !nfts?.length && !isLoading && !error"
+        class="warning"
+      >
+        No product has been minted!
       </div>
 
-      <ul class="products-list" *ngIf="!isLoading">
+      <div *ngIf="!isLoading && !account && !error" class="warning">
+        <span>Connect to view your tokens!</span>
+        <button
+          class="cta"
+          title="Connect"
+          aria-label="Connect Wallet Button"
+          (click)="onclick()"
+        >
+          Connect Wallet
+        </button>
+      </div>
+
+      <ul class="products-list" *ngIf="!isLoading && !error">
         <li class="products" *ngFor="let nft of nfts">
           <div class="img-cover">
             <img
@@ -23,6 +38,7 @@
             <h2 class="god-name">{{ nft.name }}</h2>
             <button
               *ngIf="!nft.price"
+              (click)="onList(nft.name, nft.owner!)"
               class="mint-btn"
               type="button"
               aria-label="List button"
@@ -30,6 +46,7 @@
             >
               List
             </button>
+
             <button
               *ngIf="nft.price"
               class="mint-btn"
@@ -43,7 +60,7 @@
         </li>
       </ul>
 
-      <ul class="products-list" *ngIf="isLoading">
+      <ul class="products-list" *ngIf="isLoading && !error">
         <li class="products" *ngFor="let nft of genNumArr(20)">
           <div class="img-cover skeleton"></div>
 
@@ -61,7 +78,7 @@
         </li>
       </ul>
 
-      <!-- <div class="error-container" *ngIf="error && nfts.length">
+      <div class="error-container" *ngIf="error">
         <app-error-svg></app-error-svg>
 
         <div class="error-msg">
@@ -69,24 +86,22 @@
 
           <p>Please check your network and try again</p>
         </div>
-      </div> -->
+      </div>
     </section>
   </section>
-
-  <!-- <div class="error-container outer" *ngIf="error && !nfts.length">
-    <app-error-svg></app-error-svg>
-
-    <div class="error-msg">
-      <h2>Request Failed</h2>
-
-      <p>Please check your network and try again</p>
-    </div>
-  </div> -->
-
-  <router-outlet></router-outlet>
 </main>
 
-<!-- <app-modal *ngIf="openModal" (onclose)="onModalClose()"> </app-modal>
+<app-approval-modal
+  *ngIf="modalOpened"
+  (onapproved)="closeModal()"
+></app-approval-modal>
+
+<app-list-form
+  [tokenId]="tokenId"
+  *ngIf="formOpened"
+  (onclose)="closeForm()"
+></app-list-form>
+
 <app-error-msg *ngIf="openErrorMsg" (onclose)="onErrorClose()">{{
   errorMsg
-}}</app-error-msg> -->
+}}</app-error-msg>

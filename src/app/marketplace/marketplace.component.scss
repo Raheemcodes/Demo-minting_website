@@ -269,6 +269,17 @@
   }
 }
 
+.no-product {
+  font-size: 1.2rem;
+
+  @media screen and (min-width: $md) {
+    font-size: 1.5rem;
+  }
+  @media screen and (min-width: $xl) {
+    font-size: 2rem;
+  }
+}
+
 .normal-cursor {
   cursor: default !important;
 }

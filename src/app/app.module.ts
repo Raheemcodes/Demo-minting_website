@@ -15,6 +15,9 @@ import { ErrorMsgComponent } from './error-msg/error-msg.component';
 import { environment } from 'src/environments/environment.development';
 import { MarketplaceComponent } from './marketplace/marketplace.component';
 import { ProfileComponent } from './profile/profile.component';
+import { ApprovalModalComponent } from './approval-modal/approval-modal.component';
+import { ListFormComponent } from './list-form/list-form.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -26,12 +29,15 @@ import { ProfileComponent } from './profile/profile.component';
     ErrorMsgComponent,
     MarketplaceComponent,
     ProfileComponent,
+    ApprovalModalComponent,
+    ListFormComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     ErrorSvgComponent,
     HttpClientModule,
+    FormsModule,
   ],
   providers: [
     { provide: 'Window', useValue: window },

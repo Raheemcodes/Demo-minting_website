@@ -1,10 +1,12 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { DataService } from '../shared/data.service';
-import { SharedService } from '../shared/shared.service';
-import { NFT } from '../mint/mint.model';
 import { timer } from 'rxjs';
 import Web3 from 'web3';
+import { NFT } from '../mint/mint.model';
 import { ModalService } from '../modal/modal.service';
+import { DataService } from '../shared/data.service';
+import { SharedService } from '../shared/shared.service';
+import AzukiDemoAbi from '../mint/AzukiDemoAbi';
+import { environment } from 'src/environments/environment.development';
 
 @Component({
   selector: 'app-profile',
@@ -13,10 +15,18 @@ import { ModalService } from '../modal/modal.service';
 })
 export class ProfileComponent implements OnInit {
   _isLoading: boolean = false;
+  modalOpened: boolean = false;
+  formOpened: boolean = false;
+  error: boolean = false;
+  openErrorMsg: boolean = false;
 
   account!: string;
-  web3Provider = (<any>this.window).ethereum;
+  errorMsg!: string;
+  tokenId!: number;
   nfts!: NFT[];
+
+  web3Provider = (<any>this.window).ethereum;
+  nftContract = new this.web3.eth.Contract(AzukiDemoAbi, environment.address);
 
   constructor(
     private dataService: DataService,
@@ -44,15 +54,34 @@ export class ProfileComponent implements OnInit {
     this.fetchNFT();
   }
 
+  openModal() {
+    this.modalOpened = true;
+  }
+
+  closeModal() {
+    this.modalOpened = false;
+  }
+
+  openForm() {
+    this.formOpened = true;
+  }
+
+  closeForm() {
+    this.formOpened = false;
+  }
+
   genNumArr(num: number): number[] {
     return this.sharedService.generateNumArr(num);
+  }
+
+  onclick() {
+    this.sharedService.connect();
   }
 
   getAccount() {
     this.account = this.sharedService.account;
 
     if (!this.account) {
-      this.modalService.disableAutoClose$.next(true);
       this.modalService.openModal$.next(true);
     }
 
@@ -73,9 +102,34 @@ export class ProfileComponent implements OnInit {
     });
   }
 
+  onErrorClose() {
+    this.openErrorMsg = false;
+  }
+
+  async onList(tokenName: string, owner: string) {
+    try {
+      const [name, tokenId] = tokenName.split('#');
+      this.tokenId = +tokenId;
+
+      const isApproved: boolean = await this.nftContract.methods
+        .isApprovedForAll(owner, this.account)
+        .call();
+
+      if (!isApproved) {
+        this.modalOpened = true;
+        return;
+      }
+
+      this.formOpened = true;
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   async fetchNFT() {
     if (!this.account) return;
     this.isLoading = true;
+    this.error = false;
 
     this.dataService.fetchYourNFTs(this.account).subscribe({
       next: ({ nfts }) => {
@@ -84,6 +138,7 @@ export class ProfileComponent implements OnInit {
       },
       error: (err) => {
         this.isLoading = false;
+        this.error = true;
       },
       complete: () => {
         console.log('Profile: Tokens Fetch Success');

@@ -28,7 +28,7 @@
   gap: toRem(16);
   padding: toRem(16);
   border-radius: 8px;
-  animation: fade-in 500ms ease-in;
+  animation: fade-in 300ms ease-in;
   transition: all 300ms ease-out;
 
   &.closed {
