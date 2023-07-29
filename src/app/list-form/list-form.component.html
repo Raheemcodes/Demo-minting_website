@@ -1,0 +1,39 @@
+<div class="backdrop" #backdrop (click)="onclickBackdrop($event)">
+  <form
+    autocomplete="off"
+    class="pop-up__cover"
+    #modal
+    #form="ngForm"
+    (ngSubmit)="onsubmit(form)"
+  >
+    <div class="content">
+      <div class="list_price-input_control">
+        <span>ETH</span>
+        <input
+          #input="ngModel"
+          placeholder="Enter List Price"
+          ngModel
+          name="price"
+          type="number"
+          class="list__price-input"
+          min="1e-18"
+          required
+        />
+      </div>
+
+      <p *ngIf="input.touched && input.invalid" class="sub-title">
+        Number must not be > 1e-18
+      </p>
+    </div>
+
+    <button
+      [disabled]="!form.valid"
+      class="cta"
+      title="Connect"
+      aria-label="Connect Wallet Button"
+      type="submit"
+    >
+      List
+    </button>
+  </form>
+</div>
