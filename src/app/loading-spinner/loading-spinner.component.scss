@@ -1,0 +1,48 @@
+@import "../shared/shared";
+
+:host {
+  display: inline-block;
+  position: relative;
+  width: toRem(48);
+  height: toRem(48);
+}
+:host div {
+  position: absolute;
+  border: toRem(4) solid #fff;
+  opacity: 1;
+  border-radius: 50%;
+  animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+:host div:nth-child(2) {
+  animation-delay: -0.5s;
+}
+@keyframes lds-ripple {
+  0% {
+    top: toRem(21.6);
+    left: toRem(21.6);
+    width: 0;
+    height: 0;
+    opacity: 0;
+  }
+  4.9% {
+    top: toRem(21.6);
+    left: toRem(21.6);
+    width: 0;
+    height: 0;
+    opacity: 0;
+  }
+  5% {
+    top: toRem(21.6);
+    left: toRem(21.6);
+    width: 0;
+    height: 0;
+    opacity: 1;
+  }
+  100% {
+    top: toRem(0);
+    left: toRem(0);
+    width: toRem(43.2);
+    height: toRem(43.2);
+    opacity: 0;
+  }
+}
