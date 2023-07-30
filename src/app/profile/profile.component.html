@@ -38,7 +38,7 @@
             <h2 class="god-name">{{ nft.name }}</h2>
             <button
               *ngIf="!nft.price"
-              (click)="onList(nft.name, nft.owner!)"
+              (click)="onList(nft.name)"
               class="mint-btn"
               type="button"
               aria-label="List button"

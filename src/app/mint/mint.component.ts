@@ -4,29 +4,29 @@ import {
   Component,
   Inject,
   NgZone,
+  OnDestroy,
   OnInit,
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, Subscription, interval, map, timer } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 import Web3 from 'web3';
+import { LogsSubscription } from 'web3-eth-contract';
+import { ModalService } from '../modal/modal.service';
+import { DataService } from '../shared/data.service';
 import { SharedService } from '../shared/shared.service';
 import AzukiDemoAbi from './AzukiDemoAbi';
 import { Mint, NFT, Transfer } from './mint.model';
-import { DataService } from '../shared/data.service';
-import { ModalService } from '../modal/modal.service';
 
 @Component({
   selector: 'app-mint',
   templateUrl: './mint.component.html',
   styleUrls: ['./mint.component.scss'],
 })
-export class MintComponent implements OnInit {
+export class MintComponent implements OnInit, OnDestroy {
   _isLoading: boolean = false;
   error: boolean = false;
-  openErrorMsg = false;
 
-  errorMsg: string = '';
   web3Provider = (<any>this.window).ethereum;
   contract = new this.web3.eth.Contract(AzukiDemoAbi, environment.address);
   account!: string;
@@ -36,8 +36,8 @@ export class MintComponent implements OnInit {
   endTime!: string;
   mintedSupply: number = 0;
   totalSupply: number = 0;
-  sub: Subscription[] = [];
   nfts: NFT[] = [];
+  subs: Subscription[] = [];
   screenWidth: number = this.window.innerWidth;
   DEFAULT_ADDRESS = '0x0000000000000000000000000000000000000000';
 
@@ -55,7 +55,7 @@ export class MintComponent implements OnInit {
   set isLoading(val: boolean) {
     if (val) this._isLoading = val;
     else {
-      timer(3000).subscribe(() => {
+      this.subs[0] = timer(3000).subscribe(() => {
         this._isLoading = val;
       });
     }
@@ -66,10 +66,10 @@ export class MintComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.onTransfer();
     this.getAccount();
     this.getMintDetails();
     this.getPastMint();
-    this.subToNoWallet$();
   }
 
   genNumArr(): number[] {
@@ -92,33 +92,14 @@ export class MintComponent implements OnInit {
   getAccount() {
     this.account = this.sharedService.account;
 
-    this.sharedService.account$.subscribe({
+    this.subs[1] = this.sharedService.account$.subscribe({
       next: (account) => {
-        if (!this.account) {
-          this.contract.setProvider(this.web3Provider);
-          this.onTransfer();
-        }
         this.account = account;
       },
       error: (err) => {
         console.log(err);
       },
     });
-  }
-
-  subToNoWallet$() {
-    this.sharedService.noWallet$.subscribe((msg) => {
-      this.setErrorMsg(new Error(msg));
-    });
-  }
-
-  setErrorMsg(err: any) {
-    this.openErrorMsg = true;
-    this.errorMsg = this.sharedService.handleError(err);
-  }
-
-  onErrorClose() {
-    this.openErrorMsg = false;
   }
 
   getDate(time: BigInt): string {
@@ -172,15 +153,20 @@ export class MintComponent implements OnInit {
 
   updateTime() {
     this.setTime();
+    if (this.subs[3]) this.subs[3].unsubscribe();
 
-    interval(60 * 1000).subscribe(() => {
+    this.subs[3] = interval(60 * 1000).subscribe(() => {
       this.setTime();
     });
   }
 
   loopSupply(mintedSupply: number, totalSupply: number) {
-    timer(3000).subscribe(() => {
-      this.sub[0] = this.loopTo(mintedSupply, 0).subscribe((val: number) => {
+    if (this.subs[4]) this.subs[4].unsubscribe();
+
+    this.subs[4] = timer(3000).subscribe(() => {
+      if (this.subs[5]) this.subs[5].unsubscribe();
+
+      this.subs[5] = this.loopTo(mintedSupply, 5).subscribe((val: number) => {
         this.mintedSupply = val;
       });
 
@@ -193,7 +179,7 @@ export class MintComponent implements OnInit {
 
     return interval(1000 / to).pipe(
       map(() => {
-        if (count == to) this.sub[idx].unsubscribe();
+        if (count == to) this.subs[idx].unsubscribe();
         count++;
 
         return count;
@@ -202,7 +188,9 @@ export class MintComponent implements OnInit {
   }
 
   onTransfer() {
-    const sub = this.contract.events.Transfer({
+    let sub!: LogsSubscription;
+    if (sub) sub.unsubscribe();
+    sub = this.contract.events.Transfer({
       filter: { from: this.DEFAULT_ADDRESS },
     });
 
@@ -214,7 +202,7 @@ export class MintComponent implements OnInit {
     });
 
     sub.on('error', (err: any) => {
-      this.setErrorMsg(err);
+      this.sharedService.setErrorMsg(err);
 
       console.error(err);
     });
@@ -222,8 +210,10 @@ export class MintComponent implements OnInit {
 
   getNft(idx: number, owner: string) {
     this.error = false;
+    this.cd.detectChanges();
+    if (this.subs[6 + idx]) this.subs[6 + idx].unsubscribe();
 
-    this.dataService.fetchNFT(idx, owner).subscribe({
+    this.subs[6 + idx] = this.dataService.fetchNFT(idx, owner).subscribe({
       next: (nft) => {
         timer(3000).subscribe(() => {
           this.addNft(nft);
@@ -231,6 +221,7 @@ export class MintComponent implements OnInit {
       },
       error: (err: HttpErrorResponse) => {
         this.error = true;
+        this.cd.detectChanges();
 
         console.error(err);
       },
@@ -242,17 +233,17 @@ export class MintComponent implements OnInit {
 
   addNft(nft: NFT) {
     this.nfts.unshift(nft);
-
     this.cd.detectChanges();
   }
 
   async safeMint() {
     this.error = false;
-
     this.cd.detectChanges();
 
     if (this.account) {
       try {
+        this.contract.setProvider(this.web3Provider);
+        this.onTransfer();
         this.contract.handleRevert = true;
 
         await this.contract.methods.safeMint().send({
@@ -262,7 +253,7 @@ export class MintComponent implements OnInit {
 
         console.log('Minted Succesfully');
       } catch (err: any) {
-        this.setErrorMsg(err);
+        this.sharedService.setErrorMsg(err);
       }
     } else {
       this.modalService.openModal$.next(true);
@@ -296,7 +287,7 @@ export class MintComponent implements OnInit {
     } catch (err) {
       this.isLoading = false;
       this.error = true;
-      this.setErrorMsg(err);
+      this.sharedService.setErrorMsg(err);
 
       console.error(err);
     }
@@ -318,5 +309,11 @@ export class MintComponent implements OnInit {
     } catch (err) {
       console.error(err);
     }
+  }
+
+  ngOnDestroy(): void {
+    this.subs.forEach((sub) => {
+      if (sub) sub.unsubscribe();
+    });
   }
 }

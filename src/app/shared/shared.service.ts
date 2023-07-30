@@ -14,6 +14,7 @@ export class SharedService implements OnInit {
   nfts: NFT[] = [];
   nfts$ = new Subject<NFT[]>();
   noWallet$ = new Subject<string>();
+  errorMsg$ = new Subject<string>();
 
   constructor(
     private router: Router,
@@ -95,6 +96,10 @@ export class SharedService implements OnInit {
     return { msg, nfts: mappedNFTs };
   }
 
+  setErrorMsg(err: any) {
+    this.errorMsg$.next(this.handleError(err));
+  }
+
   handleError({
     message,
     reason,
@@ -120,6 +125,12 @@ export class SharedService implements OnInit {
       'Failed to fetch',
       'User denied transaction signature',
       'You do not have metamask wallet',
+      'Token is not listed',
+      'List price must be > 0',
+      'Token has already been listed',
+      'This contract is not approved to transfer this token',
+      "You're not the owner of this token",
+      "You can't buy your own nft rather unlist it",
     ];
 
     msg =

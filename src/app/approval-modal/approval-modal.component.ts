@@ -8,6 +8,7 @@ import {
   Renderer2,
   ViewChild,
   ElementRef,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { environment } from 'src/environments/environment.development';
 import Web3 from 'web3';
@@ -25,8 +26,10 @@ export class ApprovalModalComponent implements OnInit, OnDestroy {
   @ViewChild('modal') modal!: ElementRef<HTMLElement>;
   @ViewChild('backdrop') backdrop!: ElementRef<HTMLElement>;
   @Output() onapproved = new EventEmitter();
+
   isApproved: boolean = false;
-  sub!: Subscription;
+  isLoading: boolean = false;
+  subs: Subscription[] = [];
 
   web3Provider = (<any>this.window).ethereum;
   nftContract = new this.web3.eth.Contract(AzukiDemoAbi, environment.address);
@@ -40,6 +43,7 @@ export class ApprovalModalComponent implements OnInit, OnDestroy {
   constructor(
     private sharedService: SharedService,
     private renderer: Renderer2,
+    private cd: ChangeDetectorRef,
     @Inject('Window') private window: Window,
     @Inject('Web3') private web3: Web3
   ) {}
@@ -50,14 +54,25 @@ export class ApprovalModalComponent implements OnInit, OnDestroy {
 
   getAccount() {
     this.account = this.sharedService.account;
+    this.nftContract.setProvider(this.web3Provider);
   }
 
   async onclick() {
     try {
+      this.isLoading = true;
+      this.nftContract.handleRevert = true;
+      this.cd.detectChanges();
+
       const tx = await this.nftContract.methods
         .setApprovalForAll(environment.marketplace, true)
         .send({ from: this.account });
+
+      this.isApproved = true;
+      this.isLoading = false;
+      this.cd.detectChanges();
     } catch (err) {
+      this.isLoading = false;
+      this.cd.detectChanges();
       console.log(err);
     }
   }
@@ -69,17 +84,17 @@ export class ApprovalModalComponent implements OnInit, OnDestroy {
   }
 
   close() {
-    if (this.sub) this.sub.unsubscribe();
+    if (this.subs[1]) this.subs[1].unsubscribe();
 
     this.renderer.addClass(this.modal.nativeElement, 'closed');
     this.renderer.addClass(this.backdrop.nativeElement, 'closed');
 
-    this.sub = timer(300).subscribe(() => {
-      this.onapproved.emit();
-    });
+    this.subs[1] = timer(300).subscribe(() => this.onapproved.emit());
   }
 
   ngOnDestroy(): void {
-    if (this.sub) this.sub.unsubscribe();
+    this.subs.forEach((sub) => {
+      if (sub) sub.unsubscribe();
+    });
   }
 }

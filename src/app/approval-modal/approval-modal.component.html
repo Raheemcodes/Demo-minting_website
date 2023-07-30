@@ -11,13 +11,15 @@
       </p>
     </div>
 
+    <app-loading-spinner *ngIf="isLoading"></app-loading-spinner>
     <button
+      *ngIf="!isLoading"
       class="cta"
       title="Connect"
       aria-label="Connect Wallet Button"
-      (click)="isApproved ? '' : onclick()"
+      (click)="isApproved ? close() : onclick()"
     >
-      {{ isApproved ? "Approved :)" : "Approve" }}
+      {{ isApproved ? "Close" : "Approve" }}
     </button>
   </div>
 </div>

@@ -1,5 +1,7 @@
+import { SharedService } from 'src/app/shared/shared.service';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ModalService } from './modal/modal.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -7,16 +9,22 @@ import { ModalService } from './modal/modal.service';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-  hasMetamaskWallet: boolean = 'ethereum' in window;
   openModal: boolean = true;
+  openErrorMsg = false;
+  errorMsg!: string;
+
+  subs: Subscription[] = [];
 
   constructor(
+    private sharedService: SharedService,
     private modalService: ModalService,
     private cd: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.subOpenModal();
+    this.subToNoWallet$();
+    this.onErrorMsg();
   }
 
   subOpenModal() {
@@ -29,5 +37,23 @@ export class AppComponent implements OnInit {
   onModalClose() {
     this.openModal = false;
     this.cd.detectChanges();
+  }
+
+  onErrorMsg() {
+    this.sharedService.errorMsg$.subscribe((msg) => {
+      this.openErrorMsg = true;
+      this.errorMsg = msg;
+    });
+  }
+
+  onErrorClose() {
+    this.openErrorMsg = false;
+  }
+
+  subToNoWallet$() {
+    if (this.subs[2]) this.subs[2].unsubscribe();
+    this.subs[2] = this.sharedService.noWallet$.subscribe((msg) => {
+      this.sharedService.setErrorMsg(new Error(msg));
+    });
   }
 }

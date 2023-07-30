@@ -7,7 +7,12 @@
     (ngSubmit)="onsubmit(form)"
   >
     <div class="content">
-      <div class="list_price-input_control">
+      <div
+        [ngClass]="{
+          'list_price-input_control': true,
+          error: error || (input.touched && input.invalid)
+        }"
+      >
         <span>ETH</span>
         <input
           #input="ngModel"
@@ -26,7 +31,9 @@
       </p>
     </div>
 
+    <app-loading-spinner *ngIf="isLoading"></app-loading-spinner>
     <button
+      *ngIf="!isLoading"
       [disabled]="!form.valid"
       class="cta"
       title="Connect"

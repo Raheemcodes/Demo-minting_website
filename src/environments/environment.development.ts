@@ -1,6 +1,6 @@
 export const environment = {
-  address: '0x4Cf35ca8BA121b5441C4b7D9b5Ff55E260eE6963',
-  marketplace: '0x401ff827441a28cC93047Ecf0A3F39FB35cA92F3',
+  address: '0x0AE3B41aD6C1C1B5020606b4d4D355A0890A46B1',
+  marketplace: '0x852dd7512c6D0f8D877b741D49aD8c3e6aDc89E3',
   API: 'http://localhost:5000',
   baseURI:
     'https://ipfs.io/ipfs/QmZcH4YvBVVRJtdn4RdbaqgspFU8gH6P9vomDpBVpAL3u4',

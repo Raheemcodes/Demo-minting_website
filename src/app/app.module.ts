@@ -18,6 +18,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { ApprovalModalComponent } from './approval-modal/approval-modal.component';
 import { ListFormComponent } from './list-form/list-form.component';
 import { FormsModule } from '@angular/forms';
+import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { FormsModule } from '@angular/forms';
     ProfileComponent,
     ApprovalModalComponent,
     ListFormComponent,
+    LoadingSpinnerComponent,
   ],
   imports: [
     BrowserModule,

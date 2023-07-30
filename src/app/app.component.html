@@ -1,3 +1,6 @@
 <app-header></app-header>
 <router-outlet></router-outlet>
 <app-modal *ngIf="openModal" (onclose)="onModalClose()"> </app-modal>
+<app-error-msg *ngIf="openErrorMsg" (onclose)="onErrorClose()">{{
+  errorMsg
+}}</app-error-msg>
