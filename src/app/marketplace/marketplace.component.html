@@ -18,7 +18,9 @@
           </div>
 
           <div class="product-content">
-            <h2 class="god-name" *ngIf="nft.price">ETH {{ nft.price }}</h2>
+            <h2 class="god-name" *ngIf="nft.price">
+              ETH {{ toEther(nft.price) }}
+            </h2>
 
             <div class="btn-row">
               <h2 class="god-name">{{ nft.name }}</h2>

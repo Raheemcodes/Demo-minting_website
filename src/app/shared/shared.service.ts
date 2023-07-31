@@ -1,14 +1,15 @@
-import { Inject, Injectable, OnInit } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
+import { Router, UrlTree } from '@angular/router';
 import { Subject } from 'rxjs';
 import Web3, { Web3BaseProvider } from 'web3';
 import { NFT } from '../mint/mint.model';
-import { Router, UrlTree } from '@angular/router';
 import { ModalService } from '../modal/modal.service';
+import { NFTResponse } from './data.model';
 
 @Injectable({
   providedIn: 'root',
 })
-export class SharedService implements OnInit {
+export class SharedService {
   account!: string;
   account$ = new Subject<string>();
   nfts: NFT[] = [];
@@ -19,11 +20,9 @@ export class SharedService implements OnInit {
   constructor(
     private router: Router,
     private modalService: ModalService,
-    @Inject('Web3') private web3: Web3,
-    @Inject('Window') private window: Window
+    @Inject('Window') private window: Window,
+    @Inject('Web3') private web3: Web3
   ) {}
-
-  ngOnInit(): void {}
 
   canActivate(): true | UrlTree {
     if (!this.account) this.modalService.openModal$.next(true);
@@ -81,10 +80,11 @@ export class SharedService implements OnInit {
     return name.split('#')[1];
   }
 
-  restructureNFTImage({ msg, nfts }: { msg: string; nfts: NFT[] }): {
-    msg: string;
-    nfts: NFT[];
-  } {
+  toEther(num: number): number {
+    return +this.web3.utils.fromWei(num, 'ether');
+  }
+
+  restructureNFTImage({ msg, nfts }: NFTResponse): NFTResponse {
     const mappedNFTs: NFT[] = nfts.map((nft) => {
       const restructuredNFT: NFT = {
         ...nft,

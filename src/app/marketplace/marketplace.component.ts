@@ -45,6 +45,10 @@ export class MarketplaceComponent implements OnInit {
     return this.sharedService.generateNumArr(num);
   }
 
+  toEther(num: number): number {
+    return this.sharedService.toEther(num);
+  }
+
   fetchNFTs() {
     this.isLoading = true;
     this.error = false;

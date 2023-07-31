@@ -1,9 +1,9 @@
-import { SharedService } from 'src/app/shared/shared.service';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { NFT } from '../mint/mint.model';
 import { Observable, map } from 'rxjs';
+import { SharedService } from 'src/app/shared/shared.service';
 import { environment } from 'src/environments/environment.development';
+import { NFT } from '../mint/mint.model';
 
 @Injectable({
   providedIn: 'root',

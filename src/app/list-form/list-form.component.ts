@@ -81,7 +81,6 @@ export class ListFormComponent implements OnInit, OnDestroy {
         form.reset();
         this.isLoading = false;
         this.isListed = true;
-        this.close();
         this.cd.detectChanges();
       } catch (err) {
         this.isLoading = false;

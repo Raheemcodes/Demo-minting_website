@@ -13,7 +13,7 @@ import AzukiDemoAbi from '../mint/AzukiDemoAbi';
 import NFTMarketPlaceAbi from '../mint/NFTMarketPlaceAbi';
 import { NFT } from '../mint/mint.model';
 import { ModalService } from '../modal/modal.service';
-import { ListCreated } from '../shared/List.model';
+import { ListCreated, ListRemoved } from '../shared/list.model';
 import { DataService } from '../shared/data.service';
 import { SharedService } from '../shared/shared.service';
 
@@ -91,6 +91,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
     return this.sharedService.generateNumArr(num);
   }
 
+  toCheckSumAddress(address: string): string {
+    return this.web3.utils.toChecksumAddress(address);
+  }
+
   onclick() {
     this.sharedService.connect();
   }
@@ -99,7 +103,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     let sub!: LogsSubscription;
     if (sub) sub.unsubscribe();
     sub = this.marketplaceContract.events.ListCreated({
-      filter: { nft: environment.address, seller: this.account },
+      filter: { seller: this.account },
     });
 
     sub.on('data', (event) => {
@@ -107,8 +111,36 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
       this.nfts.forEach((nft, index) => {
         const [name, nftId] = nft.name.split('#');
-        if (tokenId === +nftId) {
-          this.nfts[index].price = price;
+
+        if (Number(tokenId) === +nftId) {
+          this.nfts[index].price = +this.web3.utils.fromWei(price, 'ether');
+          this.cd.detectChanges();
+        }
+      });
+    });
+
+    sub.on('error', (err: any) => {
+      this.sharedService.setErrorMsg(err);
+
+      console.error(err);
+    });
+  }
+
+  onListRemoved() {
+    let sub!: LogsSubscription;
+    if (sub) sub.unsubscribe();
+    sub = this.marketplaceContract.events.ListRemoved({
+      filter: { seller: this.account },
+    });
+
+    sub.on('data', (event) => {
+      const { tokenId }: ListRemoved = event.returnValues as any;
+
+      this.nfts.forEach((nft, index) => {
+        const [name, nftId] = nft.name.split('#');
+
+        if (Number(tokenId) === +nftId) {
+          this.nfts[index].price = undefined;
           this.cd.detectChanges();
         }
       });
@@ -170,9 +202,27 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.sharedService.setErrorMsg(err);
         console.error(err);
       }
-    } else {
-      this.modalService.openModal$.next(true);
-    }
+    } else this.modalService.openModal$.next(true);
+  }
+
+  async onunlist(tokenName: string) {
+    if (this.account) {
+      try {
+        const [name, tokenId] = tokenName.split('#');
+        this.tokenId = +tokenId;
+
+        this.marketplaceContract.setProvider(this.web3Provider);
+        this.onListRemoved();
+        this.marketplaceContract.handleRevert = true;
+
+        await this.marketplaceContract.methods
+          .unlist(tokenId)
+          .send({ from: this.account });
+      } catch (err) {
+        this.sharedService.setErrorMsg(err);
+        console.error(err);
+      }
+    } else this.modalService.openModal$.next(true);
   }
 
   async fetchNFT() {

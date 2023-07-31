@@ -4,7 +4,7 @@
     class="pop-up__cover"
     #modal
     #form="ngForm"
-    (ngSubmit)="onsubmit(form)"
+    (ngSubmit)="isListed ? close() : onsubmit(form)"
   >
     <div class="content">
       <div
@@ -34,13 +34,13 @@
     <app-loading-spinner *ngIf="isLoading"></app-loading-spinner>
     <button
       *ngIf="!isLoading"
-      [disabled]="!form.valid"
+      [disabled]="form.invalid && !isListed"
       class="cta"
       title="Connect"
       aria-label="Connect Wallet Button"
       type="submit"
     >
-      List
+      {{ isListed ? "Close" : "List" }}
     </button>
   </form>
 </div>

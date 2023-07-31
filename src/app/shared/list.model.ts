@@ -1,6 +1,10 @@
 export interface ListCreated {
-  nft: string;
+  seller: string;
+  tokenId: bigint;
+  price: bigint;
+}
+
+export interface ListRemoved {
   seller: string;
   tokenId: number;
-  price: number;
 }
