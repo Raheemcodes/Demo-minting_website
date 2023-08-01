@@ -8,3 +8,10 @@ export interface ListRemoved {
   seller: string;
   tokenId: number;
 }
+
+export interface ListPurchased {
+  seller: string;
+  buyer: string;
+  tokenId: bigint;
+  price: bigint;
+}

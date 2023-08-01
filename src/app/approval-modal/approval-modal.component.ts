@@ -63,7 +63,7 @@ export class ApprovalModalComponent implements OnInit, OnDestroy {
       this.nftContract.handleRevert = true;
       this.cd.detectChanges();
 
-      const tx = await this.nftContract.methods
+      await this.nftContract.methods
         .setApprovalForAll(environment.marketplace, true)
         .send({ from: this.account });
 

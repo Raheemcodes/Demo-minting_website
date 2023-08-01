@@ -17,7 +17,7 @@ export class DataService {
   ): Observable<{ msg: string; nfts: NFT[] }> {
     return this.http
       .get<{ msg: string; nfts: NFT[] }>(
-        `${environment.API}/tokens?skip=${skip}&limit=${limit}`
+        `${environment.API}/listings?skip=${skip}&limit=${limit}`
       )
       .pipe(map(this.sharedService.restructureNFTImage));
   }

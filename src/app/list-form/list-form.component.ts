@@ -15,7 +15,6 @@ import { NgForm } from '@angular/forms';
 import { Subscription, timer } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 import Web3 from 'web3';
-import AzukiDemoAbi from '../mint/AzukiDemoAbi';
 import NFTMarketPlaceAbi from '../mint/NFTMarketPlaceAbi';
 import { ModalService } from '../modal/modal.service';
 import { SharedService } from '../shared/shared.service';

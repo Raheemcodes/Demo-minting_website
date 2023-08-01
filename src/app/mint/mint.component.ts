@@ -11,7 +11,6 @@ import { Router } from '@angular/router';
 import { Observable, Subscription, interval, map, timer } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 import Web3 from 'web3';
-import { LogsSubscription } from 'web3-eth-contract';
 import { ModalService } from '../modal/modal.service';
 import { DataService } from '../shared/data.service';
 import { SharedService } from '../shared/shared.service';
@@ -188,17 +187,15 @@ export class MintComponent implements OnInit, OnDestroy {
   }
 
   onTransfer() {
-    let sub!: LogsSubscription;
-    if (sub) sub.unsubscribe();
-    sub = this.contract.events.Transfer({
+    const sub = this.contract.events.Transfer({
       filter: { from: this.DEFAULT_ADDRESS },
     });
 
     sub.on('data', (event) => {
-      const transfer: Transfer = event.returnValues as any;
+      const { tokenId, to }: Transfer = event.returnValues as any;
 
       this.mintedSupply++;
-      this.getNft(Number(transfer.tokenId), transfer.to);
+      this.getNft(Number(tokenId), to);
     });
 
     sub.on('error', (err: any) => {
@@ -211,9 +208,8 @@ export class MintComponent implements OnInit, OnDestroy {
   getNft(idx: number, owner: string) {
     this.error = false;
     this.cd.detectChanges();
-    if (this.subs[6 + idx]) this.subs[6 + idx].unsubscribe();
 
-    this.subs[6 + idx] = this.dataService.fetchNFT(idx, owner).subscribe({
+    this.dataService.fetchNFT(idx, owner).subscribe({
       next: (nft) => {
         timer(3000).subscribe(() => {
           this.addNft(nft);

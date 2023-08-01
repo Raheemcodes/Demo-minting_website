@@ -8,13 +8,12 @@ import {
 import { Subscription, timer } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 import Web3 from 'web3';
-import { LogsSubscription } from 'web3-eth-contract';
 import AzukiDemoAbi from '../mint/AzukiDemoAbi';
 import NFTMarketPlaceAbi from '../mint/NFTMarketPlaceAbi';
 import { NFT } from '../mint/mint.model';
 import { ModalService } from '../modal/modal.service';
-import { ListCreated, ListRemoved } from '../shared/list.model';
 import { DataService } from '../shared/data.service';
+import { ListCreated, ListRemoved } from '../shared/list.model';
 import { SharedService } from '../shared/shared.service';
 
 @Component({
@@ -100,9 +99,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   onListCreated() {
-    let sub!: LogsSubscription;
-    if (sub) sub.unsubscribe();
-    sub = this.marketplaceContract.events.ListCreated({
+    const sub = this.marketplaceContract.events.ListCreated({
       filter: { seller: this.account },
     });
 
@@ -127,9 +124,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   onListRemoved() {
-    let sub!: LogsSubscription;
-    if (sub) sub.unsubscribe();
-    sub = this.marketplaceContract.events.ListRemoved({
+    const sub = this.marketplaceContract.events.ListRemoved({
       filter: { seller: this.account },
     });
 
@@ -214,6 +209,16 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.marketplaceContract.setProvider(this.web3Provider);
         this.onListRemoved();
         this.marketplaceContract.handleRevert = true;
+
+        const isApproved: boolean = await this.nftContract.methods
+          .isApprovedForAll(this.account, environment.marketplace)
+          .call();
+
+        if (!isApproved) {
+          this.modalOpened = true;
+          this.cd.detectChanges();
+          return;
+        }
 
         await this.marketplaceContract.methods
           .unlist(tokenId)
