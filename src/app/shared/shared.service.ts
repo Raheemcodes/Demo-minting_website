@@ -53,6 +53,7 @@ export class SharedService {
     if ('ethereum' in this.window) {
       try {
         const web3Provider = <Web3BaseProvider>this.window.ethereum;
+        this.web3.setProvider(web3Provider);
 
         const response = await web3Provider.request({
           method: 'eth_requestAccounts',

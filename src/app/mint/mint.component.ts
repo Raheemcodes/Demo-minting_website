@@ -10,7 +10,8 @@ import {
 import { Router } from '@angular/router';
 import { Observable, Subscription, interval, map, timer } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
-import Web3 from 'web3';
+import Web3, { Contract } from 'web3';
+import { LogsSubscription } from 'web3-eth-contract/lib/commonjs/log_subscription';
 import { ModalService } from '../modal/modal.service';
 import { DataService } from '../shared/data.service';
 import { SharedService } from '../shared/shared.service';
@@ -27,7 +28,7 @@ export class MintComponent implements OnInit, OnDestroy {
   error: boolean = false;
 
   web3Provider = (<any>this.window).ethereum;
-  contract = new this.web3.eth.Contract(AzukiDemoAbi, environment.address);
+  contract!: Contract<typeof AzukiDemoAbi>;
   account!: string;
   mint!: Mint;
   startTime!: string;
@@ -37,6 +38,7 @@ export class MintComponent implements OnInit, OnDestroy {
   totalSupply: number = 0;
   nfts: NFT[] = [];
   subs: Subscription[] = [];
+  logsSub!: LogsSubscription;
   screenWidth: number = this.window.innerWidth;
   DEFAULT_ADDRESS = '0x0000000000000000000000000000000000000000';
 
@@ -65,7 +67,8 @@ export class MintComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.onTransfer();
+    // this.onProviderChange();
+    this.sub();
     this.getAccount();
     this.getMintDetails();
     this.getPastMint();
@@ -91,8 +94,11 @@ export class MintComponent implements OnInit, OnDestroy {
   getAccount() {
     this.account = this.sharedService.account;
 
+    if (this.subs[1]) this.subs[1].unsubscribe();
+
     this.subs[1] = this.sharedService.account$.subscribe({
       next: (account) => {
+        if (!this.account) this.sub();
         this.account = account;
       },
       error: (err) => {
@@ -186,19 +192,29 @@ export class MintComponent implements OnInit, OnDestroy {
     );
   }
 
+  sub() {
+    if (this.logsSub) this.logsSub.removeAllListeners();
+
+    this.contract = new this.web3.eth.Contract(
+      AzukiDemoAbi,
+      environment.address
+    );
+    this.onTransfer();
+  }
+
   onTransfer() {
-    const sub = this.contract.events.Transfer({
+    this.logsSub = this.contract.events.Transfer({
       filter: { from: this.DEFAULT_ADDRESS },
     });
 
-    sub.on('data', (event) => {
+    this.logsSub.on('data', (event) => {
       const { tokenId, to }: Transfer = event.returnValues as any;
 
       this.mintedSupply++;
       this.getNft(Number(tokenId), to);
     });
 
-    sub.on('error', (err: any) => {
+    this.logsSub.on('error', (err: any) => {
       this.sharedService.setErrorMsg(err);
 
       console.error(err);
@@ -238,8 +254,6 @@ export class MintComponent implements OnInit, OnDestroy {
 
     if (this.account) {
       try {
-        this.contract.setProvider(this.web3Provider);
-        this.onTransfer();
         this.contract.handleRevert = true;
 
         await this.contract.methods.safeMint().send({
@@ -250,6 +264,7 @@ export class MintComponent implements OnInit, OnDestroy {
         console.log('Minted Succesfully');
       } catch (err: any) {
         this.sharedService.setErrorMsg(err);
+        console.error(err);
       }
     } else {
       this.modalService.openModal$.next(true);
@@ -308,6 +323,8 @@ export class MintComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if (this.logsSub) this.logsSub.removeAllListeners();
+
     this.subs.forEach((sub) => {
       if (sub) sub.unsubscribe();
     });

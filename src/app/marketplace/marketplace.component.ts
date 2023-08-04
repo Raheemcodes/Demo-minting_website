@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectorRef,
   Component,
@@ -6,15 +7,15 @@ import {
   OnInit,
 } from '@angular/core';
 import { Subscription, timer } from 'rxjs';
-import Web3 from 'web3';
-import { NFT } from '../mint/mint.model';
-import { DataService } from '../shared/data.service';
-import { SharedService } from '../shared/shared.service';
-import NFTMarketPlaceAbi from '../mint/NFTMarketPlaceAbi';
 import { environment } from 'src/environments/environment.development';
-import { ListCreated, ListPurchased, ListRemoved } from '../shared/list.model';
+import Web3, { Contract } from 'web3';
+import { LogsSubscription } from 'web3-eth-contract/lib/commonjs/log_subscription';
+import NFTMarketPlaceAbi from '../mint/NFTMarketPlaceAbi';
+import { NFT } from '../mint/mint.model';
 import { ModalService } from '../modal/modal.service';
-import { HttpErrorResponse } from '@angular/common/http';
+import { DataService } from '../shared/data.service';
+import { ListCreated, ListPurchased, ListRemoved } from '../shared/list.model';
+import { SharedService } from '../shared/shared.service';
 
 @Component({
   selector: 'app-marketplace',
@@ -25,21 +26,17 @@ export class MarketplaceComponent implements OnInit, OnDestroy {
   _isLoading: boolean = false;
   error: boolean = false;
 
-  web3Provider = (<any>this.window).ethereum;
-  marketplaceContract = new this.web3.eth.Contract(
-    NFTMarketPlaceAbi,
-    environment.marketplace
-  );
-  nfts!: NFT[];
+  contract!: Contract<typeof NFTMarketPlaceAbi>;
+  nfts: NFT[] = [];
   account!: string;
   subs: Subscription[] = [];
+  logsSub: LogsSubscription[] = [];
 
   constructor(
     private dataService: DataService,
     private sharedService: SharedService,
     private modalService: ModalService,
     private cd: ChangeDetectorRef,
-    @Inject('Window') private window: Window,
     @Inject('Web3') private web3: Web3
   ) {}
 
@@ -50,7 +47,9 @@ export class MarketplaceComponent implements OnInit, OnDestroy {
 
       this.subs[0] = timer(3000).subscribe(() => {
         this._isLoading = val;
+        this.cd.detectChanges();
       });
+      this.cd.detectChanges();
     }
   }
 
@@ -64,7 +63,20 @@ export class MarketplaceComponent implements OnInit, OnDestroy {
     this.sub();
   }
 
+  unsub() {
+    this.logsSub.forEach((sub) => {
+      if (sub) sub.removeAllListeners();
+    });
+  }
+
   sub() {
+    this.unsub();
+
+    this.contract = new this.web3.eth.Contract(
+      NFTMarketPlaceAbi,
+      environment.marketplace
+    );
+
     this.onListCreated();
     this.onListRemoved();
     this.onListPurchased();
@@ -83,21 +95,26 @@ export class MarketplaceComponent implements OnInit, OnDestroy {
   }
 
   addNft(nft: NFT) {
-    this.nfts.push(nft);
-    this.nfts.sort((a, b) => a.price! - b.price!);
+    const lastNFT = this.nfts[this.nfts.length - 1];
+
+    if (lastNFT?.price! > nft.price!) {
+      this.nfts.unshift(nft);
+    } else {
+      this.nfts.push(nft);
+    }
+    // this.nfts.sort((a, b) => a.price! - b.price!);
     this.cd.detectChanges();
   }
 
   getAccount() {
     this.account = this.sharedService.account;
-    if (this.subs[1]) this.subs[1].unsubscribe();
 
-    if (!this.account) {
-      this.modalService.openModal$.next(true);
-    }
+    if (this.subs[1]) this.subs[1].unsubscribe();
 
     this.subs[1] = this.sharedService.account$.subscribe({
       next: (account) => {
+        if (!this.account) this.sub();
+
         this.account = account;
       },
       error: (err) => {
@@ -107,21 +124,17 @@ export class MarketplaceComponent implements OnInit, OnDestroy {
   }
 
   onListCreated() {
-    const sub = this.marketplaceContract.events.ListCreated({
+    this.logsSub[0] = this.contract.events.ListCreated({
       filter: { seller: this.account },
     });
 
-    sub.on('data', (event) => {
+    this.logsSub[0].on('data', (event) => {
       const { seller, tokenId, price }: ListCreated = event.returnValues as any;
 
-      const lastNFT = this.nfts[this.nfts.length - 1];
-
-      if (lastNFT.price! > Number(price)) {
-        this.getNft(Number(tokenId), seller, Number(price));
-      }
+      this.getNft(Number(tokenId), seller, Number(price));
     });
 
-    sub.on('error', (err: any) => {
+    this.logsSub[0].on('error', (err: any) => {
       this.sharedService.setErrorMsg(err);
 
       console.error(err);
@@ -129,11 +142,11 @@ export class MarketplaceComponent implements OnInit, OnDestroy {
   }
 
   onListRemoved() {
-    const sub = this.marketplaceContract.events.ListRemoved({
+    this.logsSub[1] = this.contract.events.ListRemoved({
       filter: { seller: this.account },
     });
 
-    sub.on('data', (event) => {
+    this.logsSub[1].on('data', (event) => {
       const { tokenId }: ListRemoved = event.returnValues as any;
 
       this.nfts.forEach((nft, idx) => {
@@ -144,7 +157,7 @@ export class MarketplaceComponent implements OnInit, OnDestroy {
       });
     });
 
-    sub.on('error', (err: any) => {
+    this.logsSub[1].on('error', (err: any) => {
       this.sharedService.setErrorMsg(err);
 
       console.error(err);
@@ -152,11 +165,10 @@ export class MarketplaceComponent implements OnInit, OnDestroy {
   }
 
   onListPurchased() {
-    const sub = this.marketplaceContract.events.ListPurchased();
+    this.logsSub[2] = this.contract.events.ListPurchased();
 
-    sub.on('data', async (event) => {
-      const { seller, tokenId, buyer }: ListPurchased =
-        event.returnValues as any;
+    this.logsSub[2].on('data', async (event) => {
+      const { tokenId }: ListPurchased = event.returnValues as any;
 
       this.nfts.forEach((nft, idx) => {
         const [name, id] = nft.name.split('#');
@@ -166,7 +178,7 @@ export class MarketplaceComponent implements OnInit, OnDestroy {
       });
     });
 
-    sub.on('error', (err: any) => {
+    this.logsSub[2].on('error', (err: any) => {
       console.error(err);
     });
   }
@@ -176,11 +188,9 @@ export class MarketplaceComponent implements OnInit, OnDestroy {
       try {
         const [title, tokenId] = name.split('#');
 
-        this.marketplaceContract.setProvider(this.web3Provider);
-        this.sub();
-        this.marketplaceContract.handleRevert = true;
+        this.contract.handleRevert = true;
 
-        await this.marketplaceContract.methods
+        await this.contract.methods
           .buy(tokenId)
           .send({ from: this.account, value: `${price}` });
       } catch (err) {
@@ -231,6 +241,8 @@ export class MarketplaceComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.unsub();
+
     this.subs.forEach((sub) => {
       if (sub) sub.unsubscribe();
     });
