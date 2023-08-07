@@ -5,6 +5,7 @@ import Web3, { Web3BaseProvider } from 'web3';
 import { NFT } from '../mint/mint.model';
 import { ModalService } from '../modal/modal.service';
 import { NFTResponse } from './data.model';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -34,7 +35,12 @@ export class SharedService {
     this.account$.next(account);
   }
 
-  setNft(nft: NFT) {
+  setNFTs(nft: NFT[]) {
+    this.nfts = nft;
+    this.nfts$.next(this.nfts);
+  }
+
+  unshiftNFT(nft: NFT) {
     this.nfts.unshift(nft);
     this.nfts$.next(this.nfts);
   }
@@ -97,8 +103,33 @@ export class SharedService {
     return { msg, nfts: mappedNFTs };
   }
 
-  setErrorMsg(err: any) {
-    this.errorMsg$.next(this.handleError(err));
+  setErrorMsg(err: any, opt?: 'http') {
+    if (opt == 'http') this.errorMsg$.next(this.handleHttpError(err));
+    else this.errorMsg$.next(this.handleError(err));
+  }
+
+  handleHttpError(error: HttpErrorResponse) {
+    let errorMsg: string = 'An unknown error!';
+
+    switch (error.message) {
+      case 'INVALID_SKIP':
+        errorMsg = "Invalid 'skip' query params";
+        break;
+
+      case 'EXCEED_COUNT':
+        errorMsg = "'skip' has exceeded toal tokend";
+        break;
+
+      case 'INVALID_LIMIT':
+        errorMsg = "Invalid 'limit' query params";
+        break;
+
+      case 'INVALID_ADDRESS':
+        errorMsg = 'Invalid account address';
+        break;
+    }
+
+    return errorMsg;
   }
 
   handleError({

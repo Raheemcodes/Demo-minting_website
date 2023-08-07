@@ -1,6 +1,6 @@
 export const environment = {
-  address: '0xDed1F751BE91Efa13251eB8C25F60e090d2d0d3C',
-  marketplace: '0x039Fe971Bb9Fe46c8B826C4F3185e7dDdAb9cE2d',
+  address: '0xED672db8b7189a5B659f3a3AFb5069376D53F76F',
+  marketplace: '0x6f93F83633465e2D73c1B5dD9Cca7867471770e9',
   API: 'http://localhost:5000',
   baseURI: 'https://api.coolcatsnft.com/cat',
   provider: 'ws://127.0.0.1:8545',

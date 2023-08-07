@@ -227,9 +227,7 @@ export class MintComponent implements OnInit, OnDestroy {
 
     this.dataService.fetchNFT(idx, owner).subscribe({
       next: (nft) => {
-        timer(3000).subscribe(() => {
-          this.addNft(nft);
-        });
+        this.addNft(nft);
       },
       error: (err: HttpErrorResponse) => {
         this.error = true;
@@ -275,6 +273,7 @@ export class MintComponent implements OnInit, OnDestroy {
     try {
       this.isLoading = true;
       this.error = false;
+      this.cd.detectChanges();
 
       this.mint = await this.contract.methods.getMint().call();
 
@@ -295,35 +294,35 @@ export class MintComponent implements OnInit, OnDestroy {
 
       this.isLoading = false;
       this.error = false;
+      this.cd.detectChanges();
     } catch (err) {
       this.isLoading = false;
       this.error = true;
       this.sharedService.setErrorMsg(err);
+      this.cd.detectChanges();
 
       console.error(err);
     }
   }
 
-  async getPastMint() {
-    try {
-      const events = await this.contract.getPastEvents('Transfer', {
-        filter: { from: this.DEFAULT_ADDRESS },
-        fromBlock: 0,
-        toBlock: 'latest',
-      });
+  getPastMint() {
+    this.dataService.fetchMintedNFts(0, 100).subscribe({
+      next: ({ msg, nfts }) => {
+        this.nfts = nfts;
+        this.cd.detectChanges();
+      },
+      error: (err) => {
+        this.error = true;
+        this.cd.detectChanges();
 
-      events.forEach((event) => {
-        const transfer: Transfer = (event as any).returnValues;
-
-        this.getNft(Number(transfer.tokenId), transfer.to);
-      });
-    } catch (err) {
-      console.error(err);
-    }
+        this.sharedService.setErrorMsg(err, 'http');
+        console.error(err);
+      },
+    });
   }
 
   ngOnDestroy(): void {
-    if (this.logsSub) this.logsSub.removeAllListeners();
+    this.logsSub.removeAllListeners();
 
     this.subs.forEach((sub) => {
       if (sub) sub.unsubscribe();
