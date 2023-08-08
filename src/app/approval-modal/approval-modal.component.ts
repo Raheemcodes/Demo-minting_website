@@ -13,7 +13,7 @@ import {
 import { environment } from 'src/environments/environment.development';
 import Web3 from 'web3';
 import NFTMarketPlaceAbi from '../mint/NFTMarketPlaceAbi';
-import AzukiDemoAbi from '../mint/AzukiDemoAbi';
+import NFTDemoAbi from '../mint/NFTDemoAbi';
 import { SharedService } from '../shared/shared.service';
 import { Subscription, timer } from 'rxjs';
 
@@ -32,7 +32,7 @@ export class ApprovalModalComponent implements OnInit, OnDestroy {
   subs: Subscription[] = [];
 
   web3Provider = (<any>this.window).ethereum;
-  nftContract = new this.web3.eth.Contract(AzukiDemoAbi, environment.address);
+  nftContract = new this.web3.eth.Contract(NFTDemoAbi, environment.address);
   marketplaceContract = new this.web3.eth.Contract(
     NFTMarketPlaceAbi,
     environment.marketplace

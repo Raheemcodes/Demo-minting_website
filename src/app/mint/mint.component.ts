@@ -15,7 +15,7 @@ import { LogsSubscription } from 'web3-eth-contract/lib/commonjs/log_subscriptio
 import { ModalService } from '../modal/modal.service';
 import { DataService } from '../shared/data.service';
 import { SharedService } from '../shared/shared.service';
-import AzukiDemoAbi from './AzukiDemoAbi';
+import NFTDemoAbi from './NFTDemoAbi';
 import { Mint, NFT, Transfer } from './mint.model';
 
 @Component({
@@ -28,7 +28,7 @@ export class MintComponent implements OnInit, OnDestroy {
   error: boolean = false;
 
   web3Provider = (<any>this.window).ethereum;
-  contract!: Contract<typeof AzukiDemoAbi>;
+  contract!: Contract<typeof NFTDemoAbi>;
   account!: string;
   mint!: Mint;
   startTime!: string;
@@ -195,10 +195,7 @@ export class MintComponent implements OnInit, OnDestroy {
   sub() {
     if (this.logsSub) this.logsSub.removeAllListeners();
 
-    this.contract = new this.web3.eth.Contract(
-      AzukiDemoAbi,
-      environment.address
-    );
+    this.contract = new this.web3.eth.Contract(NFTDemoAbi, environment.address);
     this.onTransfer();
   }
 

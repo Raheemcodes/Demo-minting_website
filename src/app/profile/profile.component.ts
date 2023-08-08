@@ -9,7 +9,7 @@ import {
 import { Subscription, timer } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 import Web3, { Contract } from 'web3';
-import AzukiDemoAbi from '../mint/AzukiDemoAbi';
+import NFTDemoAbi from '../mint/NFTDemoAbi';
 import NFTMarketPlaceAbi from '../mint/NFTMarketPlaceAbi';
 import { NFT } from '../mint/mint.model';
 import { ModalService } from '../modal/modal.service';
@@ -36,7 +36,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   subs: Subscription[] = [];
   logsSub: LogsSubscription[] = [];
 
-  nftContract!: Contract<typeof AzukiDemoAbi>;
+  nftContract!: Contract<typeof NFTDemoAbi>;
   marketplaceContract!: Contract<typeof NFTMarketPlaceAbi>;
 
   constructor(
@@ -105,7 +105,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.unsub();
 
     this.nftContract = new this.web3.eth.Contract(
-      AzukiDemoAbi,
+      NFTDemoAbi,
       environment.address
     );
     this.marketplaceContract = new this.web3.eth.Contract(

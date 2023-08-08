@@ -36,7 +36,6 @@ export class ListFormComponent implements OnInit, OnDestroy {
   subs: Subscription[] = [];
 
   web3Provider = (<any>this.window).ethereum;
-  // nftContract = new this.web3.eth.Contract(AzukiDemoAbi, environment.address);
   marketplaceContract = new this.web3.eth.Contract(
     NFTMarketPlaceAbi,
     environment.marketplace
