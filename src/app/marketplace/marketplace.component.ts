@@ -228,7 +228,7 @@ export class MarketplaceComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.error = false;
 
-    this.dataService.fetchListedNFts(0, 20).subscribe({
+    this.dataService.fetchListedNFts(0, 100).subscribe({
       next: ({ nfts }) => {
         this.nfts = nfts;
         this.isLoading = false;
