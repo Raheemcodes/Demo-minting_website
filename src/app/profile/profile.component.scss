@@ -23,7 +23,7 @@ h2.title {
 
 .warning {
   @include display-flex();
-  align-items: end;
+  align-items: flex-end;
   flex-wrap: wrap;
   gap: toRem(24);
   font-size: 1.2rem;
